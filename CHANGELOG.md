@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.2
+
+- Highlight installer success messages, warnings, headings, and commands with terminal colors.
+- Shorten post-install guidance and place PATH instructions and the recommended setup command at the bottom.
+- Keep redirected output and `NO_COLOR` output free of ANSI escape sequences.
+- Add a distinct FVM logo and favicon to the documentation.
+
 ## 0.0.1
 
 First public release.

@@ -1,7 +1,7 @@
 === fvm doctor (a machine with three problems) -> exit 1
 --- stdout
 fvm doctor
-  ok    build: fvm 0.0.1, running from source rather than an installed binary.
+  ok    build: fvm 0.0.2, running from source rather than an installed binary.
   FAIL  PATH: /fvm/shims is on PATH but an entry ahead of it provides a flutter, so the shim is never reached.
           PATH order (entries that provide a flutter):
             2. /fvm/shims  <- fvm shims
@@ -21,7 +21,7 @@ fvm doctor
 === fvm doctor (a healthy machine) -> exit 1
 --- stdout
 fvm doctor
-  ok    build: fvm 0.0.1, running from source rather than an installed binary.
+  ok    build: fvm 0.0.2, running from source rather than an installed binary.
   ok    PATH: /fvm/shims is on PATH ahead of every other flutter.
   FAIL  shims: /fvm/shims/flutter is not recognisable as a fvm shim.
           -> Overwrite it with: fvm setup

@@ -3,7 +3,7 @@ description: >
   A per-project Flutter SDK version manager. Keeps every SDK in one central
   cache, pins a version per project with .fvmrc, and forwards commands to
   the right SDK. Installs the `fvm` executable.
-version: 0.0.1
+version: 0.0.2
 repository: https://github.com/mrgnhnt96/fvm
 issue_tracker: https://github.com/mrgnhnt96/fvm/issues
 documentation: https://fvm.mrgnhnt.com
