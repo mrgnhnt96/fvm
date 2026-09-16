@@ -33,6 +33,27 @@ void main() {
                 200);
           }));
 
+  test('uses the official manifest and archive paths without an extra segment',
+      () async {
+    final api = FlutterArchiveClient(
+      platform: arm,
+      httpClient: MockClient((request) async {
+        expect(request.url.toString(),
+            'https://storage.googleapis.com/flutter_infra_release/releases/releases_macos.json');
+        return http.Response(
+            jsonEncode({
+              'current_release': {'stable': 'release-3.44.0'},
+              'releases': [release('3.44.0', arch: 'arm64')],
+            }),
+            200);
+      }),
+    );
+    final artifact = await api.artifactFor(
+        channel: Channel.stable, version: '3.44.0', platform: arm);
+    expect(artifact.archive.toString(),
+        'https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_3.44.0-stable.zip');
+  });
+
   test('selects native architecture and interprets old missing arch as x64',
       () async {
     final api = client([

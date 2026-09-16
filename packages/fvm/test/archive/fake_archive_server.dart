@@ -37,7 +37,7 @@ class FakeArchiveServer {
   final List<String> requests = [];
 
   Uri get objectBase => Uri.parse('http://${_server.address.host}:'
-      '${_server.port}/flutter-archive/');
+      '${_server.port}/flutter-archive/releases/');
 
   Uri get listApi => Uri.parse('http://${_server.address.host}:'
       '${_server.port}/storage/v1/b/flutter-archive/o');
@@ -106,7 +106,7 @@ class FakeArchiveServer {
       return;
     }
 
-    const objectPrefix = '/flutter-archive/';
+    const objectPrefix = '/flutter-archive/releases/';
     if (!request.uri.path.startsWith(objectPrefix)) {
       response.statusCode = HttpStatus.notFound;
       await response.close();

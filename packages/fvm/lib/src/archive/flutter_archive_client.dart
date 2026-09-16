@@ -23,7 +23,7 @@ class FlutterArchiveClient implements ReleaseClient {
         _verbose = verbose ?? VerboseLog.disabled;
 
   static final Uri defaultObjectBase = Uri.parse(
-      'https://storage.googleapis.com/flutter_infra_release/flutter/');
+      'https://storage.googleapis.com/flutter_infra_release/releases/');
   final http.Client? _injectedHttp;
   late final http.Client _http = _injectedHttp ?? http.Client();
   final Uri _base;
@@ -35,7 +35,7 @@ class FlutterArchiveClient implements ReleaseClient {
 
   Future<Map<String, dynamic>> _manifest(HostPlatform platform) async {
     if (_manifests[platform.os] case final cached?) return cached;
-    final url = _base.resolve('releases/releases_${platform.os}.json');
+    final url = _base.resolve('releases_${platform.os}.json');
     _verbose.log(VerboseArea.net, () => 'GET $url');
     try {
       final response = await _http.get(url);
