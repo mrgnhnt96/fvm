@@ -5,7 +5,7 @@ description: "Run a build against a concrete Flutter version without a shell pro
 
 ## Install the manager
 
-Use a published binary or compile FVM from source as described in [Installation](/getting-started/installation). Cache `$FVM_HOME/versions` between builds where your CI provider supports it; include OS and CPU architecture in the cache key.
+Use the install script described in [Installation](/getting-started/installation). Cache `$FVM_HOME/versions` between builds where your CI provider supports it; include OS and CPU architecture in the cache key.
 
 ## Install the pinned SDK
 

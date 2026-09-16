@@ -63,7 +63,7 @@ const List<NavGroup> navigation = [
       NavItem(
         "Installation",
         "/getting-started/installation",
-        summary: "Build the manager from source or download a published binary.",
+        summary: "Get the manager with one install script, no Dart or Flutter SDK required.",
       ),
       NavItem(
         "Quick Start",

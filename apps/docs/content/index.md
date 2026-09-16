@@ -5,6 +5,14 @@ description: "A per-project Flutter SDK version manager. One cache, a committed 
 
 FVM follows the same workflow as [DVM](https://dvm.mrgnhnt.com), with Flutter SDKs and their bundled Dart runtimes.
 
+## Install
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/mrgnhnt96/fvm/main/install.sh | sh
+```
+
+No Dart or Flutter SDK is required first. Follow the installer’s setup instructions, then pin your project.
+
 ## Pin a project
 
 <Terminal cwd="~/code/app" caption="Install once, pin your project, and run its Flutter SDK.">
@@ -30,7 +38,7 @@ FVM installs only a Flutter shim. Your existing DVM-managed `dart` can stay on P
 
 <CardGrid columns="3">
 <Card title="Installation" href="/getting-started/installation" icon="rocket">
-Build FVM from source, or install a published binary release.
+One install script, no Dart or Flutter SDK required.
 </Card>
 <Card title="Quick Start" href="/getting-started/quick-start" icon="pin">
 Pin your first project and configure your editor.

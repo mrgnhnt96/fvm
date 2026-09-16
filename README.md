@@ -8,21 +8,25 @@ select the right Flutter whenever you change directories.
 
 Documentation: <https://fvm.mrgnhnt.com>
 
-## Build and try it
-
-This repository contains a standalone Dart CLI. Flutter is not required to build
-it; the compiled executable does not require Dart to be installed.
+## Install
 
 ```sh
-dart pub get
-mkdir -p build
-dart compile exe packages/fvm/bin/fvm.dart -o build/fvm
-./build/fvm --help
-./build/fvm install stable
-./build/fvm use stable --gitignore
-./build/fvm flutter --version
-./build/fvm dart --version
+curl -fsSL https://raw.githubusercontent.com/mrgnhnt96/fvm/main/install.sh | sh
 ```
+
+The script downloads and verifies a standalone binary. No Dart or Flutter SDK
+is required first. Follow the setup instructions it prints, then:
+
+```sh
+fvm install stable
+fvm use stable --gitignore
+fvm flutter --version
+fvm dart --version
+```
+
+On Windows, download `fvm-windows-x64.zip` from
+[GitHub Releases](https://github.com/mrgnhnt96/fvm/releases/latest), extract it,
+and run `fvm setup` for PATH instructions.
 
 `use` installs a missing SDK, writes `.fvmrc`, and creates
 `.fvm/flutter_sdk` for IDEs. Commit `.fvmrc`; ignore `.fvm/`. Point VS Code's
@@ -33,7 +37,7 @@ or `global` makes an SDK available. It prints PATH instructions. To explicitly
 set up the shim and add the PATH line to your shell startup file:
 
 ```sh
-./build/fvm setup --write-path-line
+fvm setup --write-path-line
 ```
 
 Keep the compiled binary in a permanent location before setup: the shim records
@@ -105,8 +109,8 @@ bash tool/test_install_sh.sh
 Tests use memory filesystems and local HTTP fixtures. CI runs on Linux, macOS,
 and Windows. `.github/workflows/release.yml` builds standalone binaries,
 stamps the version, packages checksummed release assets, and can publish a versioned
-release through a manual workflow dispatch. `install.sh` and `fvm update` target `mrgnhnt96/fvm`; they require a
-published release. No release has been published as part of creating this repo.
+release through a manual workflow dispatch. `install.sh` and `fvm update` target `mrgnhnt96/fvm`; they install
+checksummed binaries from the published releases.
 
 DVM's legacy cbracken migration is intentionally absent because its directory
 layout is specific to Dart. This is an independent implementation, not the
@@ -134,5 +138,4 @@ search index. GitHub Actions → **Deploy docs** publishes the selected ref;
 choose `main` for the public site. Deployment is manual.
 
 Pages uses the repository-level custom domain `fvm.mrgnhnt.com`, with a DNS
-CNAME pointing to `mrgnhnt96.github.io`. Enable HTTPS enforcement after GitHub
-issues the domain certificate. Actions deployments do not need a CNAME file.
+CNAME pointing to `mrgnhnt96.github.io`. HTTPS enforcement redirects HTTP visitors so browser clipboard access works. Actions deployments do not need a CNAME file.

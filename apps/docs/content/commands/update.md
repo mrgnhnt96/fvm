@@ -11,7 +11,7 @@ fvm update
 
 ## Behavior
 
-Self-update is available for official release-built binaries. Source invocations and ordinary local builds do not perform ambient version checks. For a source build, pull the repository and compile again. See [Updating FVM](/guides/updating-fvm).
+The installed binary updates itself using checksummed GitHub release assets. See [Updating FVM](/guides/updating-fvm).
 
 ## Options
 

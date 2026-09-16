@@ -27,9 +27,9 @@ Check connectivity to Google's Flutter release storage, then retry. A checksum m
 
 Run `fvm use <version>` to refresh `.fvm/flutter_sdk`, then configure the editor to use that Flutter SDK directory. On Windows, creating links can require Developer Mode or elevated privileges.
 
-## Setup says this is a source invocation
+## Setup cannot find the FVM binary
 
-Compile the CLI before setup. A shim needs the standalone FVM executable, not the Dart VM running a source file. See [Installation](/getting-started/installation).
+Reinstall FVM with the [install script](/getting-started/installation), then run the setup command it prints. Keep the executable at a permanent path because the Flutter shim records its location.
 
 ## Dart differs from Flutter's Dart
 

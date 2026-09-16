@@ -1,42 +1,41 @@
 ---
 title: "Installation"
-description: "Build the manager from source or download a published binary."
+description: "Get the manager with one install script, no Dart or Flutter SDK required."
 ---
-
-## Build from source
-
-FVM is a standalone Dart CLI. You need a Dart SDK to compile it; Flutter is not required. The compiled binary can run without Dart installed.
-
-```sh
-git clone https://github.com/mrgnhnt96/fvm.git
-cd fvm
-dart pub get
-mkdir -p build
-dart compile exe packages/fvm/bin/fvm.dart -o build/fvm
-./build/fvm --help
-```
-
-Move the executable to a permanent location before setting up the shim. For example, on macOS or Linux:
-
-```sh
-mkdir -p "$HOME/.fvm/bin"
-cp build/fvm "$HOME/.fvm/bin/fvm"
-"$HOME/.fvm/bin/fvm" setup --write-path-line
-```
-
-Restart your shell after the PATH change, then follow [Quick Start](/getting-started/quick-start).
 
 ## Install script
 
-Check [GitHub Releases](https://github.com/mrgnhnt96/fvm/releases) for published binaries. The install script requires a published release; source builds work before the first release exists.
+Install FVM on macOS or Linux with one command:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/mrgnhnt96/fvm/main/install.sh | sh
 ```
 
-The installer downloads a compiled binary and verifies its checksum. Set `FVM_VERSION` to select a particular published version, or `FVM_HOME` to change the installation location.
+The installer downloads a compiled binary for your machine and verifies its checksum. You do not need Dart or Flutter installed first.
 
-On Windows, download and unpack a Windows release asset when available, or compile from source with Dart. Run `fvm setup` for the Windows PATH instructions.
+## Set up your shell
+
+Follow the setup command printed by the installer:
+
+```sh
+fvm setup --write-path-line
+```
+
+Restart your shell, then follow [Quick Start](/getting-started/quick-start) to install Flutter and pin your first project. Setup creates a Flutter shim; it does not replace a DVM-managed Dart shim.
+
+## Choose a version or location
+
+The script installs the latest published release by default. To select a particular release:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/mrgnhnt96/fvm/main/install.sh | FVM_VERSION=0.0.1 sh
+```
+
+Set `FVM_HOME` on the installer process to change its home directory. The default is `~/.fvm`.
+
+## Windows
+
+Download `fvm-windows-x64.zip` from [GitHub Releases](https://github.com/mrgnhnt96/fvm/releases/latest), verify its matching SHA-256 file, and extract `fvm.exe` to a permanent directory. Run `fvm setup` for the Windows PATH instructions.
 
 ## SDK availability
 

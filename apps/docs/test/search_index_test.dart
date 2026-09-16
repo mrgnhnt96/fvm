@@ -79,6 +79,7 @@ void main() {
     test('finds each page by the words its own readers would use', () {
       expect(top('installation'), '/getting-started/installation');
       expect(top('install script'), '/getting-started/installation');
+      expect(top('install fvm'), '/getting-started/installation');
       expect(top('quick start'), '/getting-started/quick-start');
       expect(top('resolution order'), '/versions/resolution-order');
       expect(top('troubleshooting'), '/guides/troubleshooting');
@@ -87,12 +88,7 @@ void main() {
     test('finds a command page by the command', () {
       expect(top('fvm doctor'), '/commands/doctor');
       expect(top('list-remote'), '/commands/list-remote');
-      // Note the asymmetry with the case above, which is the ranking behaving
-      // rather than misbehaving: `install fvm` wins for /commands/install,
-      // because `fvm install` is that page's literal title. A reader after the
-      // installation GUIDE types `installation` or `install script`, and those
-      // land there. Do not "fix" this by boosting the guide.
-      expect(top('install fvm'), '/commands/install');
+      expect(top('fvm install --force'), '/commands/install');
     });
 
     test('finds a page by an identifier rather than prose', () {

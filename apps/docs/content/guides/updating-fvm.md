@@ -9,7 +9,7 @@ description: "Update the manager separately from the Flutter SDKs it manages."
 fvm update
 ```
 
-Official release builds can replace themselves using checksummed GitHub release assets. A source build does not self-update: pull the source and compile again, keeping the executable at the same path or rerunning setup after moving it.
+FVM replaces its executable using checksummed GitHub release assets. Your installed Flutter SDKs and project pins remain in place.
 
 ## Refresh Flutter
 

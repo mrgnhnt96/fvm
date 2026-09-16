@@ -10,6 +10,11 @@
           "b": "FVM follows the same workflow as DVM, with Flutter SDKs and their bundled Dart runtimes."
         },
         {
+          "h": "Install",
+          "a": "install",
+          "b": "curl -fsSL https://raw.githubusercontent.com/mrgnhnt96/fvm/main/install.sh sh No Dart or Flutter SDK is required first. Follow the installer’s setup instructions, then pin your project."
+        },
+        {
           "h": "Pin a project",
           "a": "pin-a-project",
           "b": "fvm install stable fvm use stable --gitignore fvm flutter --version fvm dart --version fvm use writes .fvmrc and creates .fvm/flutter_sdk for your IDE. Commit the pin; ignore the SDK link. Every project using the same version shares one SDK in ~/.fvm/versions."
@@ -22,7 +27,7 @@
         {
           "h": "Start here",
           "a": "start-here",
-          "b": "Build FVM from source, or install a published binary release. Pin your first project and configure your editor. Understand which Flutter SDK a command will use."
+          "b": "One install script, no Dart or Flutter SDK required. Pin your first project and configure your editor. Understand which Flutter SDK a command will use."
         },
         {
           "h": "Inspect the choice",
@@ -34,18 +39,28 @@
     {
       "u": "/getting-started/installation",
       "t": "Installation",
-      "d": "Build the manager from source or download a published binary.",
+      "d": "Get the manager with one install script, no Dart or Flutter SDK required.",
       "g": "Get Started",
       "s": [
         {
-          "h": "Build from source",
-          "a": "build-from-source",
-          "b": "FVM is a standalone Dart CLI. You need a Dart SDK to compile it; Flutter is not required. The compiled binary can run without Dart installed. git clone https://github.com/mrgnhnt96/fvm.git cd fvm dart pub get mkdir -p build dart compile exe packages/fvm/bin/fvm.dart -o build/fvm ./build/fvm --help Move the executable to a permanent location before setting up the shim. For example, on macOS or Linux: mkdir -p \"$HOME/.fvm/bin\" cp build/fvm \"$HOME/.fvm/bin/fvm\" \"$HOME/.fvm/bin/fvm\" setup --write-path-line Restart your shell after the PATH change, then follow Quick Start."
-        },
-        {
           "h": "Install script",
           "a": "install-script",
-          "b": "Check GitHub Releases for published binaries. The install script requires a published release; source builds work before the first release exists. curl -fsSL https://raw.githubusercontent.com/mrgnhnt96/fvm/main/install.sh sh The installer downloads a compiled binary and verifies its checksum. Set FVM_VERSION to select a particular published version, or FVM_HOME to change the installation location. On Windows, download and unpack a Windows release asset when available, or compile from source with Dart. Run fvm setup for the Windows PATH instructions."
+          "b": "Install FVM on macOS or Linux with one command: curl -fsSL https://raw.githubusercontent.com/mrgnhnt96/fvm/main/install.sh sh The installer downloads a compiled binary for your machine and verifies its checksum. You do not need Dart or Flutter installed first."
+        },
+        {
+          "h": "Set up your shell",
+          "a": "set-up-your-shell",
+          "b": "Follow the setup command printed by the installer: fvm setup --write-path-line Restart your shell, then follow Quick Start to install Flutter and pin your first project. Setup creates a Flutter shim; it does not replace a DVM-managed Dart shim."
+        },
+        {
+          "h": "Choose a version or location",
+          "a": "choose-a-version-or-location",
+          "b": "The script installs the latest published release by default. To select a particular release: curl -fsSL https://raw.githubusercontent.com/mrgnhnt96/fvm/main/install.sh FVM_VERSION=0.0.1 sh Set FVM_HOME on the installer process to change its home directory. The default is ~/.fvm."
+        },
+        {
+          "h": "Windows",
+          "a": "windows",
+          "b": "Download fvm-windows-x64.zip from GitHub Releases, verify its matching SHA-256 file, and extract fvm.exe to a permanent directory. Run fvm setup for the Windows PATH instructions."
         },
         {
           "h": "SDK availability",
@@ -518,7 +533,7 @@
         {
           "h": "Behavior",
           "a": "behavior",
-          "b": "Self-update is available for official release-built binaries. Source invocations and ordinary local builds do not perform ambient version checks. For a source build, pull the repository and compile again. See Updating FVM."
+          "b": "The installed binary updates itself using checksummed GitHub release assets. See Updating FVM."
         },
         {
           "h": "Options",
@@ -559,7 +574,7 @@
         {
           "h": "Install the manager",
           "a": "install-the-manager",
-          "b": "Use a published binary or compile FVM from source as described in Installation. Cache $FVM_HOME/versions between builds where your CI provider supports it; include OS and CPU architecture in the cache key."
+          "b": "Use the install script described in Installation. Cache $FVM_HOME/versions between builds where your CI provider supports it; include OS and CPU architecture in the cache key."
         },
         {
           "h": "Install the pinned SDK",
@@ -582,7 +597,7 @@
         {
           "h": "Update the manager",
           "a": "update-the-manager",
-          "b": "fvm update Official release builds can replace themselves using checksummed GitHub release assets. A source build does not self-update: pull the source and compile again, keeping the executable at the same path or rerunning setup after moving it."
+          "b": "fvm update FVM replaces its executable using checksummed GitHub release assets. Your installed Flutter SDKs and project pins remain in place."
         },
         {
           "h": "Refresh Flutter",
@@ -628,9 +643,9 @@
           "b": "Run fvm use to refresh .fvm/flutter_sdk, then configure the editor to use that Flutter SDK directory. On Windows, creating links can require Developer Mode or elevated privileges."
         },
         {
-          "h": "Setup says this is a source invocation",
-          "a": "setup-says-this-is-a-source-invocation",
-          "b": "Compile the CLI before setup. A shim needs the standalone FVM executable, not the Dart VM running a source file. See Installation."
+          "h": "Setup cannot find the FVM binary",
+          "a": "setup-cannot-find-the-fvm-binary",
+          "b": "Reinstall FVM with the install script, then run the setup command it prints. Keep the executable at a permanent path because the Flutter shim records its location."
         },
         {
           "h": "Dart differs from Flutter's Dart",
