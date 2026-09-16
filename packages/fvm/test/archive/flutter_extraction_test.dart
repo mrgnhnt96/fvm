@@ -24,8 +24,9 @@ void main() {
       final modes = await const ArchiveSdkExtractor()
           .extract(archive: archive, destination: destination);
       final sdk = sdkRootWithin(destination, 'flutter');
-      expect(fs.file(fs.path.join(sdk.path, 'bin/dart')).existsSync(), isTrue);
-      expect(modes[fs.path.join(sdk.path, 'bin/flutter')]! & 0x1ff, 0x1ed);
+      expect(
+          fs.file(fs.path.join(sdk.path, 'bin', 'dart')).existsSync(), isTrue);
+      expect(modes[fs.path.join(sdk.path, 'bin', 'flutter')]! & 0x1ff, 0x1ed);
       expect(fs.file('${archive.path}.tar').existsSync(), isFalse);
     });
   }
