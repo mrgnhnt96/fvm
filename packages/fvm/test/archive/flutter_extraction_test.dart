@@ -7,14 +7,20 @@ import 'package:fvm/src/archive/flutter_archive_exception.dart';
 import 'package:test/test.dart';
 
 void main() {
-  for (final local in [false, true]) {
+  for (final kind in ['memory', 'windows', 'local']) {
+    final local = kind == 'local';
     test(
-        'extracts tar.xz with Flutter launcher and bundled Dart (local=$local)',
+        'extracts tar.xz with Flutter launcher and bundled Dart (filesystem=$kind)',
         () async {
-      final fs = local ? const LocalFileSystem() : MemoryFileSystem.test();
+      final fs = local
+          ? const LocalFileSystem()
+          : MemoryFileSystem.test(
+              style: kind == 'windows'
+                  ? FileSystemStyle.windows
+                  : FileSystemStyle.posix);
       final tmp = local
           ? fs.systemTempDirectory.createTempSync('fvm-extract-')
-          : fs.directory('/tmp')
+          : fs.directory(kind == 'windows' ? r'c:\temp\fvm' : '/tmp')
         ..createSync(recursive: true);
       addTearDown(() => tmp.deleteSync(recursive: true));
       final archive = fs.file(fs.path.join(tmp.path, 'sdk.tar.xz'));
@@ -26,7 +32,11 @@ void main() {
       final sdk = sdkRootWithin(destination, 'flutter');
       expect(
           fs.file(fs.path.join(sdk.path, 'bin', 'dart')).existsSync(), isTrue);
-      expect(modes[fs.path.join(sdk.path, 'bin', 'flutter')]! & 0x1ff, 0x1ed);
+      expect(
+          modes[fs.path
+                  .canonicalize(fs.path.join(sdk.path, 'bin', 'flutter'))]! &
+              0x1ff,
+          0x1ed);
       expect(fs.file('${archive.path}.tar').existsSync(), isFalse);
     });
   }
