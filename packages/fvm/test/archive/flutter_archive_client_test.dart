@@ -13,6 +13,7 @@ void main() {
     server = await FakeArchiveServer.start();
     client = FlutterArchiveClient(
       objectBase: server.objectBase,
+      platform: const HostPlatform(os: 'macos', arch: 'arm64'),
     );
   });
 
