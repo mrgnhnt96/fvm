@@ -1,0 +1,30 @@
+# Dart
+.dart_tool/
+.packages
+build/
+doc/api/
+
+# Jaspr
+.jaspr_web_dev/
+
+# showrunner worktrees
+.worktrees/
+
+# macOS
+.DS_Store
+
+# llm_chat identity for this project
+.llm_chat/
+
+# machine-local hook config (absolute paths)
+.claude/settings.local.json
+
+# Local-only dependency overrides. In a pub workspace only the root may carry
+# dependency_overrides, and they name absolute paths to sibling clones on one
+# machine, so they never belong in a commit.
+pubspec_overrides.yaml
+
+# Added by saggar — local files that shouldn't be committed
+.saggar/**/*.local.*
+.saggar/scratchpad.md
+.saggar/jobs/

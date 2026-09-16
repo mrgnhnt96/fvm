@@ -1,0 +1,75 @@
+=== fvm doctor (a machine with three problems) -> exit 1
+--- stdout
+fvm doctor
+  ok    build: fvm 0.1.0, running from source rather than an installed binary.
+  FAIL  PATH: /fvm/shims is on PATH but an entry ahead of it provides a flutter, so the shim is never reached.
+          PATH order (entries that provide a flutter):
+            2. /fvm/shims  <- fvm shims
+            1. /usr/bin
+          -> Put the shims first: export PATH="/fvm/shims:$PATH"
+  FAIL  shims: /fvm/shims/flutter does not exist.
+          -> Run: fvm setup
+  FAIL  shell: your shell defines its own `fvm`, which is resolved before PATH is searched — so this fvm never runs.
+          /home/dev/.zshrc:1: fvm() { echo the old one; }   (a shell function named fvm)
+          -> Remove or comment out the line(s) above, then start a new shell.
+  ok    config: no /fvm/config.json yet, which is the normal state before a global default is set.
+  ok    project: no .fvmrc at or above /project, so the global default applies here.
+
+3 problems, 0 warnings.
+--- stderr
+
+=== fvm doctor (a healthy machine) -> exit 1
+--- stdout
+fvm doctor
+  ok    build: fvm 0.1.0, running from source rather than an installed binary.
+  ok    PATH: /fvm/shims is on PATH ahead of every other flutter.
+  FAIL  shims: /fvm/shims/flutter is not recognisable as a fvm shim.
+          -> Overwrite it with: fvm setup
+  ok    shell: no shell function or alias named `fvm` in your startup files.
+  ok    config: no /fvm/config.json yet, which is the normal state before a global default is set.
+  ok    project: .fvmrc pins Flutter 3.9.0, which is installed.
+
+1 problem, 0 warnings.
+--- stderr
+
+=== fvm setup (prints the PATH line, with a legacy install in the way) -> exit 1
+--- stdout
+Wrote /fvm/shims/flutter
+  -> /fvm/bin/fvm exec flutter
+
+Add this line to /home/dev/.zshrc (/bin/zsh):
+
+  export PATH="/fvm/bin:$PATH"
+
+It has to go ahead of anything else that puts a flutter on PATH, and it only takes effect in shells started after you save the file.
+
+fvm could add that line for you, but not yet: something in your startup files would beat it, or fvm could not read a file that might — see the warnings below.
+Clear that first and start a new shell, then run: fvm setup --write-path-line
+
+Then check it with: fvm doctor
+--- stderr
+
+WARNING: your shell defines its own `fvm`, which will win over the binary you just set up — a shell function or alias is resolved before PATH is ever searched.
+  /home/dev/.zshrc:1: fvm() { echo the old one; }
+Remove or comment out the line(s) above, then start a new shell.
+
+=== fvm setup (nothing to add) -> exit 0
+--- stdout
+Wrote /fvm/shims/flutter
+  -> /fvm/bin/fvm exec flutter
+
+/fvm/shims and /fvm/bin are already on your PATH, so there is nothing to add.
+
+Then check it with: fvm doctor
+--- stderr
+
+=== fvm install 3.13.2 (a fresh install) -> exit 0
+--- stdout
+Installed Flutter 3.13.2 to /fvm/versions/3.13.2
+--- stderr
+
+=== fvm install 3.9.0 (already installed) -> exit 0
+--- stdout
+Flutter 3.9.0 is already installed at /fvm/versions/3.9.0
+--- stderr
+

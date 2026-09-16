@@ -1,0 +1,72 @@
+name: fvm_docs
+description: >
+  The fvm documentation site — installing fvm, pinning a Flutter SDK per
+  project with .fvmrc, and a page for every command. Static Jaspr site
+  published to GitHub Pages; not part of the shipped CLI.
+publish_to: none
+
+resolution: workspace
+
+environment:
+  # Higher than the workspace root's ^3.6.0, which is the floor the CLI in
+  # packages/fvm supports. This app is never shipped to a user's machine, only
+  # built in CI, so it is free to ask for a newer toolchain than the CLI does.
+  #
+  # 3.8 is where null-aware elements (`[?maybeNull]`) landed — jaspr's own
+  # components use them and so does this app's layout — and that is what sets
+  # this floor. On 3.6 the build fails inside jaspr_builder with a
+  # ParallelWaitError that never names the language version, so the requirement
+  # is stated here where a reader will find it.
+  sdk: ^3.8.0
+
+dependencies:
+  # jaspr and jaspr_builder are pinned to the SAME exact version, and
+  # test/pubspec_versions_test.dart fails if they drift apart. jaspr_builder
+  # pins its own jaspr dependency to an exact version per release, so a caret
+  # range on either one resolves to a pair that does not build — and the
+  # failure surfaces only when dart2js whole-program compiles the real client
+  # entrypoint, which `dart analyze` never does.
+  jaspr: 0.23.3
+  jaspr_content: ^0.5.4
+  # Calls `AppBinding.basePath`, which first exists in jaspr 0.23.2. Its own
+  # `jaspr: ^0.23.0` constraint does not express that, which is the other half
+  # of why jaspr is pinned rather than ranged. The 0.9 floor is jaspr_content
+  # 0.5.4's — it depends on `jaspr_router: ^0.9.0`.
+  jaspr_router: ^0.9.0
+  # Client-side search: a `SearchDialog` component rendered in the header and a
+  # build-time indexer used by `tool/build_search_index.dart`. It is what sets
+  # the jaspr floor at 0.23.3 (`jaspr: ^0.23.3`) and the jaspr_content floor at
+  # 0.5.4, which is why the three pinned versions above moved together.
+  #
+  # 0.2.0 is the floor because `SearchDialog` is the `@client` component and
+  # every one of its parameters has to be JSON-serializable — jaspr_builder
+  # writes them into the pre-rendered HTML and decodes them in the browser.
+  # 0.2.0 is where the component's constructor became primitives-only; the
+  # structural hooks that take components and callbacks moved to
+  # `SearchDialogView`, which carries no annotation. On 0.1.1 the whole app
+  # fails to build, not just this page.
+  #
+  # Sourced from git at a FULL commit sha rather than a version range or a
+  # branch. 0.2.0 lives on GitHub `main`, and a sha is what makes the resolved
+  # lock portable: it names the exact tree this app was built and browser-tested
+  # against, so CI and a fresh clone get that tree too. It becomes a plain
+  # `^0.2.0` the day the package publishes.
+  jaspr_search:
+    git:
+      url: https://github.com/mrgnhnt96/jaspr_search.git
+      ref: ddc628d26847565c77934e149a48a67bc02ccb72
+
+dev_dependencies:
+  build_runner: ^2.10.0
+  build_web_compilers: ^4.8.0
+  jaspr_builder: 0.23.3
+  # For test/build_smoke_test.dart, which runs
+  # `dart run jaspr_cli:jaspr build` — a project dependency rather than a
+  # global activation, so the tests are self-contained. Pinned alongside
+  # jaspr/jaspr_builder for the same reason those two are pinned together.
+  jaspr_cli: 0.23.3
+  lints: ^6.0.0
+  test: ^1.26.0
+
+jaspr:
+  mode: static

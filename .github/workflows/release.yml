@@ -1,0 +1,344 @@
+name: Release
+
+# MANUAL ONLY, AND THAT IS THE DESIGN. This workflow runs when a person opens
+# the Actions tab and clicks "Run workflow". Nothing here fires on its own, so a
+# release goes out only after someone has looked at what is about to go out and
+# decided it should.
+#
+# The tradeoff, written down so nobody has to rediscover it: pushing a tag
+# publishes nothing, which means it is possible to tag a commit, walk away, and
+# find weeks later that no release was ever cut. That is the accepted cost of
+# the guarantee on the other side, which is that every published binary was
+# released by a human who chose to release it. If you are here to add `push:`
+# back so releases happen automatically, this paragraph is the decision you
+# would be reversing.
+on:
+  # A dispatch with no inputs is a DRY RUN: it builds, packages and checksums
+  # every asset and uploads them to the run, which is how you exercise this file
+  # end to end without cutting a release.
+  #
+  # To publish, fill in `tag` — it must already exist and already be pushed,
+  # because `gh release create --verify-tag` below refuses otherwise — and tick
+  # `publish`. The happy path is still: bump `version:` in
+  # packages/fvm/pubspec.yaml, commit, tag that commit `v<the same version>`,
+  # push the tag, then come here and run this with both inputs set.
+  # tool/stamp_version.sh refuses when the tag and the pubspec disagree, so no
+  # run can publish a binary that lies about its version.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build (e.g. v0.2.0). Empty builds at the pubspec version.'
+        type: string
+        required: false
+      publish:
+        description: 'Create the GitHub release. Requires a tag that already exists.'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+# Never cancel a release in flight: a run interrupted between "release created"
+# and "assets uploaded" leaves a release nobody can install from.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # Everything else hangs off this. It decides what version is being built and
+  # whether the run may publish, so those two questions are answered ONCE
+  # rather than re-derived in five jobs that could disagree.
+  resolve:
+    name: Resolve the version
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.resolve.outputs.version }}
+      tag: ${{ steps.resolve.outputs.tag }}
+      publish: ${{ steps.resolve.outputs.publish }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve
+        id: resolve
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+          INPUT_PUBLISH: ${{ inputs.publish }}
+        run: |
+          set -euo pipefail
+
+          # The two inputs are the ONLY source of truth for what is built and
+          # whether it publishes. A branch used to sit here that read
+          # GITHUB_REF_TYPE and set publish=true whenever the run's ref was a
+          # tag. That was right while a tag push was a trigger, and it is a trap
+          # now that it is not: the "Run workflow" ref picker offers tags as well
+          # as branches, so choosing one would have published a release with
+          # `publish` still sitting at its default of false. Publishing is
+          # something you tick, never something a ref implies.
+          if [ -n "${INPUT_TAG}" ]; then
+            tag="${INPUT_TAG}"
+            publish="${INPUT_PUBLISH}"
+          else
+            if [ "${INPUT_PUBLISH}" = "true" ]; then
+              echo "::error::publish was requested without a tag; a release needs a tag that already exists"
+              exit 1
+            fi
+            # A dry run: whatever the pubspec currently claims. stamp_version.sh
+            # compares against this same value, so it can never refuse here.
+            tag="v$(sed -n 's/^version:[[:space:]]*\([^[:space:]#]*\).*/\1/p' \
+              packages/fvm/pubspec.yaml | head -n 1)"
+            publish=false
+          fi
+
+          version="${tag#v}"
+          {
+            echo "tag=${tag}"
+            echo "version=${version}"
+            echo "publish=${publish}"
+          } >> "${GITHUB_OUTPUT}"
+
+          {
+            echo "## fvm ${tag}"
+            echo
+            echo "- version: \`${version}\`"
+            echo "- publish: \`${publish}\`"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      # The refusal that matters, run here rather than in the build matrix so a
+      # mismatched tag costs one job instead of five.
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Check the tag against the pubspec
+        run: bash tool/stamp_version.sh "${{ steps.resolve.outputs.version }}"
+
+  # A dispatch must not be able to publish a red tree. This is the same set of
+  # checks test.yml runs; it is repeated rather than reached through
+  # `workflow_run` because a release has to know the answer for THIS commit,
+  # and `workflow_run` only tells you that some run of Test finished.
+  verify:
+    name: Analyze and test
+    needs: resolve
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      # From the repo root: packages/fvm is a workspace member and cannot
+      # resolve on its own.
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Analyze
+        run: dart analyze
+
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Test
+        working-directory: packages/fvm
+        run: dart test
+
+      - name: Check install.sh
+        run: |
+          sh -n install.sh
+          sh tool/test_install_sh.sh
+
+  build:
+    name: ${{ matrix.target }}
+    needs: [resolve, verify]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      # One NATIVE runner per target. `dart compile exe --target-os` exists but
+      # cross-compiling an AOT binary is the kind of thing that works until it
+      # does not, and a runner per target costs minutes, not money.
+      matrix:
+        include:
+          - os: macos-14
+            target: macos-arm64
+            binary: fvm
+          # DEVIATION from the plan, which named `macos-13`: that image is
+          # retired. zonai's compile.yml — the working reference this file is
+          # modelled on — builds its macOS x64 artifact on `macos-15-intel`,
+          # which is the current Intel image. If GitHub retires that one too,
+          # this is the line to change.
+          - os: macos-15-intel
+            target: macos-x64
+            binary: fvm
+          - os: ubuntu-latest
+            target: linux-x64
+            binary: fvm
+          - os: ubuntu-24.04-arm
+            target: linux-arm64
+            binary: fvm
+          - os: windows-latest
+            target: windows-x64
+            binary: fvm.exe
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Install dependencies
+        run: dart pub get
+
+      # Writes kVersion into packages/fvm/lib/src/gen/version.dart, and refuses
+      # if the tag disagrees with the pubspec. Every one of the five binaries is
+      # stamped from the same resolved version, so they cannot drift from each
+      # other. `bash` explicitly: the Windows runner's default shell is
+      # PowerShell, and Git Bash is what this needs.
+      - name: Stamp the version
+        shell: bash
+        run: bash tool/stamp_version.sh "${{ needs.resolve.outputs.version }}"
+
+      # -D__FVM_COMPILED__=true is what makes kIsCompiled true, and kIsCompiled
+      # is what lets `fvm update` replace this binary and lets the ambient
+      # version check run at all. A binary built without it is inert on both
+      # counts — and looks completely normal.
+      - name: Compile
+        shell: bash
+        run: |
+          mkdir -p build
+          dart compile exe packages/fvm/bin/fvm.dart \
+            -o "build/${{ matrix.binary }}" \
+            -D__FVM_COMPILED__=true
+
+      # ASSERT THE OUTPUT, NOT THE ARTIFACT. A file at the expected path proves
+      # only that the compiler wrote something; running it and reading back the
+      # version proves the stamp landed and the binary starts.
+      - name: Smoke test the binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          reported="$(./build/${{ matrix.binary }} --version)"
+          echo "${reported}"
+          expected="fvm ${{ needs.resolve.outputs.version }}"
+          if [ "${reported}" != "${expected}" ]; then
+            echo "::error::built binary reports [${reported}], expected [${expected}]"
+            exit 1
+          fi
+          ./build/${{ matrix.binary }} --help > /dev/null
+
+      # upload-artifact does not preserve the executable bit;
+      # tool/package_release_assets.sh chmods before zipping for that reason.
+      - name: Upload the binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: fvm-${{ matrix.target }}
+          path: build/${{ matrix.binary }}
+          retention-days: 7
+          if-no-files-found: error
+
+  release:
+    name: Publish
+    needs: [resolve, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      # Creating a release and uploading assets to it.
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Each matrix job uploaded `fvm-<target>` holding one binary, so this
+      # lands them at artifacts/fvm-<target>/<binary> — exactly the layout
+      # tool/package_release_assets.sh documents.
+      - name: Download the binaries
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: fvm-*
+
+      - name: Package the release assets
+        run: bash tool/package_release_assets.sh artifacts release-assets
+
+      - name: Show what was built
+        run: |
+          {
+            echo "### Assets"
+            echo
+            echo '```'
+            cat release-assets/*.sha256
+            echo '```'
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      # A dispatch without `publish` stops here: everything was built,
+      # packaged and checksummed, and the result is downloadable from the run.
+      - name: Upload the assets to the run (dry run)
+        if: needs.resolve.outputs.publish != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-assets
+          path: release-assets
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Create the GitHub release
+        if: needs.resolve.outputs.publish == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.resolve.outputs.tag }}
+        run: |
+          set -euo pipefail
+          if gh release view "${TAG}" --repo "${GITHUB_REPOSITORY}" > /dev/null 2>&1; then
+            echo "::error::release ${TAG} already exists"
+            exit 1
+          fi
+          # --verify-tag: refuse rather than creating a tag that does not
+          # exist. --latest explicitly, because GitHub otherwise picks "Latest"
+          # by date, and the day this repo publishes a release for anything
+          # other than the CLI, that slot would go to a release with no fvm
+          # binary in it and every `releases/latest/download/...` link would
+          # 404. (`install.sh` and `fvm update` do not rely on that slot for
+          # exactly this reason — but the docs and humans do.)
+          gh release create "${TAG}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --title "fvm ${TAG}" \
+            --verify-tag \
+            --latest \
+            --generate-notes \
+            release-assets/*.zip \
+            release-assets/*.zip.sha256
+
+      # THE ASSET NAMES ARE A CONTRACT (see tool/package_release_assets.sh and
+      # releaseAssetName in packages/fvm/lib/src/core/updater.dart). A missing
+      # one is not noticed by anyone until a user on that platform tries to
+      # install or update, possibly weeks later. Assert the whole set here,
+      # where the release was just made.
+      - name: Verify the published assets
+        if: needs.resolve.outputs.publish == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.resolve.outputs.tag }}
+        run: |
+          set -euo pipefail
+          published="$(gh release view "${TAG}" --repo "${GITHUB_REPOSITORY}" \
+            --json assets --jq '.assets[].name')"
+          missing=0
+          for target in linux-x64 linux-arm64 macos-x64 macos-arm64 windows-x64; do
+            for name in "fvm-${target}.zip" "fvm-${target}.zip.sha256"; do
+              if ! grep -qx "${name}" <<< "${published}"; then
+                echo "::error::missing release asset: ${name}"
+                missing=1
+              fi
+            done
+          done
+          [ "${missing}" -eq 0 ] || exit 1
+          echo "All 10 assets are present on ${TAG}."

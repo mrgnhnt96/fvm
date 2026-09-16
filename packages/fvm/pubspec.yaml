@@ -1,0 +1,36 @@
+name: fvm
+description: >
+  A per-project Flutter SDK version manager. Keeps every SDK in one central
+  cache, pins a version per project with .fvmrc, and forwards commands to
+  the right SDK. Installs the `fvm` executable.
+version: 0.1.0
+repository: https://github.com/mrgnhnt96/fvm
+issue_tracker: https://github.com/mrgnhnt96/fvm/issues
+documentation: https://fvm.mrgnhnt.com
+
+resolution: workspace
+
+environment:
+  sdk: ^3.6.0
+
+# Never published. GitHub Releases + install.sh + `fvm update` is the only
+# channel, so `dart pub publish` should fail on the tooling rather than on
+# somebody remembering. (No Homebrew tap either; ARCHITECTURE.md's
+# "Distribution" section says why.)
+publish_to: none
+
+executables:
+  fvm:
+
+dependencies:
+  archive: ^4.3.0
+  args: ^2.6.0
+  crypto: ^3.0.0
+  file: ^7.0.0
+  http: ^1.2.0
+  path: ^1.9.0
+  pub_semver: ^2.1.0
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.26.0

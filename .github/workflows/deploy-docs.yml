@@ -1,0 +1,117 @@
+name: Deploy docs
+
+# Builds apps/docs (Jaspr, static mode) and publishes it to GitHub Pages when a
+# person asks it to.
+#
+# MANUAL ONLY, AND THAT IS THE DESIGN. `workflow_dispatch` is the whole trigger
+# list: the site goes live because someone opened the Actions tab, clicked "Run
+# workflow", and decided the current state of apps/docs is what the world should
+# read. Merging a docs change to main prepares that state; publishing it is a
+# separate, deliberate act.
+#
+# The tradeoff, written down so nobody has to rediscover it: it is possible to
+# merge a docs fix and forget to deploy it, leaving the published site behind
+# main until someone notices. That is the accepted cost of the guarantee on the
+# other side, which is that nothing reaches readers unreviewed. If you are here
+# to add a `push:` trigger so docs deploy themselves, this paragraph is the
+# decision you would be reversing.
+#
+# One consequence of running by hand: a deploy publishes whatever ref you picked
+# in the dispatch, so pick `main` unless you specifically mean to publish
+# something else.
+#
+# The site is served at https://fvm.mrgnhnt.com, which the site owns outright:
+# a subdomain serves from its own domain root, so every route hangs off `/` and
+# a static jaspr build's `<base href="/">` and root-absolute references are
+# already correct. The build output is uploaded exactly as jaspr emits it.
+#
+# No CNAME file is written, and that is the documented behaviour rather than an
+# omission. `fvm.mrgnhnt.com` is a REPO-level custom domain stored in this
+# repository's own Pages configuration, and GitHub's docs state it plainly for
+# this publishing source: "If you are publishing from a custom GitHub Actions
+# workflow, no CNAME file is created, and any existing CNAME file is ignored and
+# is not required."
+# (docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site
+#  /managing-a-custom-domain-for-your-github-pages-site, "Configuring a subdomain")
+#
+# So the domain survives a deploy because the Pages config holds it, and adding
+# a CNAME to apps/docs/web/ would be inert either way. `gh api
+# repos/mrgnhnt96/fvm/pages` reports the live value.
+#
+# This uses actions/deploy-pages directly, rather than pushing build output to a
+# second repository: GitHub allows one Pages site per repository and this repo's
+# one is unspent, so none of that machinery is needed. `build_type` on the Pages
+# config is already `workflow`, which is what deploy-pages requires.
+
+on:
+  workflow_dispatch: {}
+
+# What actions/deploy-pages needs, and nothing more.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time, and do not cancel one midway — a half-uploaded artifact
+# is a half-deployed site.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      # From the REPO ROOT, not from apps/docs. The root pubspec declares a pub
+      # workspace, and a workspace member cannot resolve on its own — `dart pub
+      # get` inside apps/docs fails outright.
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Check docs and search index
+        working-directory: apps/docs
+        run: dart test --exclude-tags integration
+
+      - name: Build docs
+        working-directory: apps/docs
+        run: dart run jaspr_cli:jaspr build
+
+      # jaspr leaves its own build bookkeeping inside the output directory; it
+      # is not part of the site and there is no reason to publish it.
+      - name: Strip build bookkeeping from output
+        working-directory: apps/docs/build/jaspr
+        run: rm -rf .dart_tool
+
+      # REQUIRED, not boilerplate. Pages runs Jekyll by default, and Jekyll
+      # silently drops paths whose names begin with an underscore. This output
+      # contains real, load-bearing ones — packages/_fe_analyzer_shared and
+      # packages/jaspr_content/components/_internal among them — so without this
+      # the site deploys with pieces missing rather than failing loudly.
+      - name: Disable Jekyll processing
+        working-directory: apps/docs/build/jaspr
+        run: touch .nojekyll
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/docs/build/jaspr
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

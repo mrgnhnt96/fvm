@@ -1,0 +1,4 @@
+tags:
+  # Runs a real `jaspr build` and serves the output. Minutes, not seconds.
+  integration:
+    timeout: 10x
