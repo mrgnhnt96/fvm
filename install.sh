@@ -38,8 +38,24 @@ die() {
 }
 
 info() {
-  echo "$*"
+  printf '%s\n' "$*"
 }
+
+# Check stdout, since the installer is commonly piped into sh on stdin.
+# Redirected output and NO_COLOR stay free of terminal escape sequences.
+styled() {
+  style_code="$1"
+  shift
+  if [ -t 1 ] && [ "${TERM:-}" != "dumb" ] && [ -z "${NO_COLOR+x}" ]; then
+    printf '\033[%sm%s\033[0m\n' "${style_code}" "$*"
+  else
+    info "$*"
+  fi
+}
+
+heading() { styled '1;36' "$*"; }
+command_line() { styled '1;32' "$*"; }
+success() { styled '1;32' "$*"; }
 
 need() {
   command -v "$1" > /dev/null 2>&1
@@ -339,28 +355,19 @@ warn_about_shadows() {
 
   if [ -n "${shadow_lines}" ]; then
     info ""
-    info "!! Your shell already defines its own \`fvm\`."
+    styled '1;33' "Your shell already defines its own fvm."
+    info "A function or alias takes precedence over the installed binary."
+    info "Setup refuses to write PATH changes until these lines are cleared:"
     info ""
-    info "   A shell function or alias is resolved before PATH is ever"
-    info "   searched, so the fvm just installed will NOT run — \`fvm setup\`"
-    info "   would run the other one and fail with an error that looks"
-    info "   unrelated to this install."
+    printf '%s\n' "${shadow_lines}" | sed 's/^/   /'
     info ""
-    echo "${shadow_lines}" | sed 's/^/   /'
+    heading "Next steps"
+    info "  1. comment out the line(s) above in your startup files."
+    info "  2. start a new shell."
+    info "  3. Run setup, then restart your shell to load the PATH changes:"
     info ""
-    info "   Fix it in this order:"
-    info ""
-    info "     1. comment out the line(s) above"
-    info "     2. start a new shell"
-    info "     3. then run:"
-    info ""
-    info "          ${shadow_fvm} setup --write-path-line"
-    info ""
-    info "   Step 1 first, and not for tidiness: until it is done, \`fvm setup"
-    info "   --write-path-line\` refuses to write anything, because a function"
-    info "   or alias beats PATH and the line would change nothing while"
-    info "   looking like it worked. That is why the command is step 3 and not"
-    info "   the first thing to try."
+    command_line "     ${shadow_fvm} setup --write-path-line"
+
   fi
 
   return 0
@@ -413,48 +420,25 @@ print_next_steps() {
   else
     case ":${PATH}:" in
       *":${steps_bin_dir}:"*)
-        # The bin directory is already on PATH, so only the shims half can
-        # still be missing. Both options stay, and both shrink to that half.
-        info "One command finishes the setup:"
-        info ""
-        info "  ${steps_bin_dir}/fvm setup --write-path-line"
-        info ""
-        info "That installs the flutter shim and adds ${steps_fvm_home}/shims to your"
-        info "startup file, backing it up first. Then start a new shell and"
-        info "you are done. (${steps_bin_dir} is already on your PATH.)"
-        info ""
-        info "Or, if you would rather fvm did not edit your files, add this"
-        info "line yourself and then run  fvm setup :"
-        info ""
-        info "  export PATH=\"${steps_fvm_home}/shims:\$PATH\""
+        steps_path="${steps_fvm_home}/shims"
         ;;
       *)
-        info "One command finishes the setup — fvm does not have to be on PATH"
-        info "to be run, so this absolute path works in this shell right now:"
-        info ""
-        info "  ${steps_bin_dir}/fvm setup --write-path-line"
-        info ""
-        info "That installs the flutter shim and adds ONE line to your startup"
-        info "file covering both of the directories fvm needs on PATH:"
-        info ""
-        info "  ${steps_fvm_home}/shims   so \`flutter\` run the shim"
-        info "  ${steps_bin_dir}   so \`fvm\` itself resolves"
-        info ""
-        info "It backs the file up first. Then start a new shell and you are"
-        info "done — one command, one new shell."
-        info ""
-        info "Or, if you would rather fvm did not edit your files, add this one"
-        info "line yourself:"
-        info ""
-        info "  export PATH=\"${steps_fvm_home}/shims:${steps_bin_dir}:\$PATH\""
-        info ""
-        info "then start a new shell and run  fvm setup ."
-        info ""
-        info "Naming ${steps_fvm_home}/shims before it exists is deliberate, not a"
-        info "mistake to fix: a shell skips PATH entries that do not resolve,"
-        info "so the entry goes live the moment \`fvm setup\` creates it."
+        steps_path="${steps_fvm_home}/shims:${steps_bin_dir}"
         ;;
     esac
+
+    info "Setup installs the Flutter shim and adds the needed PATH entries"
+    info "to your shell startup file, backing it up first."
+    info ""
+    info "Manual alternative: add this line to your startup file, then run setup:"
+    command_line "  export PATH=\"${steps_path}:\$PATH\""
+    command_line "  ${steps_bin_dir}/fvm setup"
+    info ""
+    heading "Next steps (recommended)"
+    info "One command finishes the setup. Run it, then start a new shell:"
+    info ""
+    command_line "  ${steps_bin_dir}/fvm setup --write-path-line"
+
   fi
 
   return 0
@@ -522,7 +506,7 @@ asset; try again, and if it keeps happening do not install it."
   mv -f "${bin_dir}/fvm.new" "${bin_dir}/fvm"
 
   info ""
-  info "fvm ${tag} is installed at ${bin_dir}/fvm"
+  success "fvm ${tag} is installed at ${bin_dir}/fvm"
 
   # Scanned BEFORE anything is printed, because the answer changes the message:
   # a shadowed shell gets a pointer at the fix instead of the one-step command,

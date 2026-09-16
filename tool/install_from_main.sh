@@ -97,7 +97,7 @@ mv -f "${tmp}/fvm" "${bin_dir}/fvm.new"
 mv -f "${bin_dir}/fvm.new" "${bin_dir}/fvm"
 
 info ""
-info "fvm (${branch} @ ${commit}) is installed at ${bin_dir}/fvm"
+success "fvm (${branch} @ ${commit}) is installed at ${bin_dir}/fvm"
 
 # From here down it is install.sh's closing sequence, in install.sh's order and
 # with install.sh's arguments: scan first, because the answer changes the
