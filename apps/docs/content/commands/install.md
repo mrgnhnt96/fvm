@@ -1,28 +1,32 @@
 ---
 title: "fvm install"
-description: "Download and verify a Flutter SDK."
+description: "Download a Flutter SDK without changing your project\u2019s selected version."
 ---
 
-## Usage
+## Install Flutter
 
 ```sh
 fvm install stable
+```
+
+This downloads the current stable release. Select it for your project afterward with `fvm use stable`.
+
+To download a particular version:
+
+```sh
 fvm install 3.44.0
+```
+
+Already installed versions are reused. Find available releases with [`fvm list-remote`](/commands/list-remote).
+
+## Reinstall an SDK
+
+```sh
 fvm install 3.44.0 --force
 ```
 
-## Behavior
+Use `--force` (or `-f`) to replace an installed SDK, for example after its files are damaged.
 
-A channel fetches its current release and updates the local mapping. An already installed concrete version is reused unless `--force` is set. Downloads are verified against the manifest SHA-256 before extraction.
+## Install another channel or alias
 
-## Options
-
-```text
-Download, verify and install a Flutter SDK.
-
-Usage: fvm install <version|channel|alias>
--h, --help     Print this usage information.
--f, --force    Reinstall even if the version is already present.
-
-Run "fvm help" to see global options.
-```
+You can pass `beta` or a saved alias instead of a version. Each `fvm install stable` or `fvm install beta` checks for that channel's current release. It does not change an existing project's version; run [`fvm use`](/commands/use) to do that.

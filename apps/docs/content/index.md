@@ -1,63 +1,38 @@
 ---
-title: "fvm"
-description: "A per-project Flutter SDK version manager. One cache, a committed pin, and the right Flutter for every project."
+title: "FVM"
+description: "Install Flutter and choose a version for each project."
 ---
 
-FVM follows the same workflow as [DVM](https://dvm.mrgnhnt.com), with Flutter SDKs and their bundled Dart runtimes.
+FVM lets each project use its own Flutter version. Install an SDK once and share it across projects that use the same version.
 
-## Install
+## Get started
 
-```sh
-curl -fsSL https://raw.githubusercontent.com/mrgnhnt96/fvm/main/install.sh | sh
-```
+1. [Install FVM](/getting-started/installation) on your computer.
+2. [Set up your project](/getting-started/quick-start) and choose its Flutter version.
+3. Run `fvm flutter` and `fvm dart` from the project directory.
 
-No Dart or Flutter SDK is required first. Follow the installer’s setup instructions, then pin your project.
+You do not need Dart or Flutter installed before installing FVM.
 
-## Pin a project
-
-<Terminal cwd="~/code/app" caption="Install once, pin your project, and run its Flutter SDK.">
+## Everyday commands
 
 ```sh
-fvm install stable
-fvm use stable --gitignore
-fvm flutter --version
-fvm dart --version
+fvm flutter pub get
+fvm flutter run
+fvm flutter test
+fvm dart analyze
 ```
 
-</Terminal>
+Want to type just `flutter`? Follow [Shell Setup](/getting-started/shell-setup).
 
-[`fvm use`](/commands/use) writes `.fvmrc` and creates `.fvm/flutter_sdk` for your IDE. Commit the pin; ignore the SDK link. Every project using the same version shares one SDK in `~/.fvm/versions`.
+## Choose your next task
 
-## Let Flutter follow the directory
+- [Change a project's Flutter version](/commands/use).
+- [Set a default for other directories](/commands/global).
+- [Find available Flutter releases](/commands/list-remote).
+- [Update FVM or Flutter](/guides/updating-fvm).
+- [Run your project in CI](/guides/ci).
+- [Fix setup or SDK selection problems](/guides/troubleshooting).
 
-[`fvm setup`](/commands/setup) creates a `flutter` shim and prints the PATH line. Add that line, or let setup write it with `--write-path-line`. Then plain `flutter` selects the SDK for your current directory.
-
-FVM installs only a Flutter shim. Your existing DVM-managed `dart` can stay on PATH. Use [`fvm dart`](/commands/dart) for the Dart bundled with the selected Flutter SDK.
-
-## Start here
-
-<CardGrid columns="3">
-<Card title="Installation" href="/getting-started/installation" icon="rocket">
-One install script, no Dart or Flutter SDK required.
-</Card>
-<Card title="Quick Start" href="/getting-started/quick-start" icon="pin">
-Pin your first project and configure your editor.
-</Card>
-<Card title="Resolution Order" href="/versions/resolution-order" icon="terminal">
-Understand which Flutter SDK a command will use.
-</Card>
-</CardGrid>
-
-## Inspect the choice
-
-```sh
-fvm which
-fvm list
-fvm doctor
-```
-
-Version resolution is local: environment override, nearest project pin, global default, then Flutter on PATH. A missing explicit pin reports an error instead of silently choosing another SDK.
-
-This repository is an independent Flutter manager, not the pub.dev package named `fvm`. It does not import another manager's cache. See [Using FVM alongside DVM](/guides/dvm).
+[Documentation for AI assistants](/llms.txt) is also available.
 
 <SectionCards />

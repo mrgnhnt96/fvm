@@ -1,24 +1,30 @@
 ---
 title: "Using FVM alongside DVM"
-description: "Keep standalone Dart and Flutter SDK selection independent."
+description: "Choose the right Dart command when you also use standalone Dart."
 ---
 
-## Two managers, two shims
-
-DVM owns a `dart` shim under `~/.dvm/shims`. FVM owns a `flutter` shim under `~/.fvm/shims`. Both can be on PATH because their launcher names differ.
+## Use Flutter's Dart for Flutter projects
 
 ```sh
-dvm dart --version
 fvm flutter --version
 fvm dart --version
+fvm dart analyze
 ```
 
-Plain `dart` follows your DVM setup. `fvm dart` always uses Dart bundled with the selected Flutter SDK. Within `fvm exec`, the Flutter SDK bin directory comes first, so child processes use its Dart launcher too.
+`fvm dart` uses the Dart included with your selected Flutter SDK. Plain `dart` continues to use your existing Dart setup, including DVM if you have installed it.
 
-## Pins and IDEs
+For a script that calls both tools, run it with `fvm exec` so it finds the selected Flutter SDK's Flutter and Dart commands.
 
-`.dvmrc` selects standalone Dart. `.fvmrc` selects Flutter. A Flutter project's editor should point to `.fvm/flutter_sdk`.
+## Configure a Flutter project
 
-## Existing FVM installations
+Use `.fvmrc` to select Flutter and set the editor's Flutter SDK path to `.fvm/flutter_sdk`. A `.dvmrc` selects standalone Dart; it does not select Flutter.
 
-This project is independent from the pub.dev FVM package. It does not import another manager's cache or configuration. Keep caches separate with `FVM_HOME` if needed, and use `fvm doctor` to identify command or PATH conflicts. Avoid placing two different executables named `fvm` on PATH without choosing which should win.
+FVM's shell setup adds a `flutter` launcher. It can coexist with DVM's `dart` launcher. See [Shell Setup](/getting-started/shell-setup).
+
+## If you already have another FVM installed
+
+These instructions are for `mrgnhnt96/fvm`, which is separate from the pub.dev package named `fvm`. Use the [installation instructions](/getting-started/installation) here.
+
+Choose which `fvm` executable your PATH should use. If you keep both managers, give this one a separate `FVM_HOME`. Existing SDK caches are not imported; install the versions you need with `fvm install`.
+
+If commands reach the wrong manager, follow [Troubleshooting](/guides/troubleshooting).

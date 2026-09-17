@@ -1,26 +1,26 @@
 ---
 title: "fvm update"
-description: "Update the FVM executable from GitHub Releases."
+description: "Install a newer FVM release while keeping your SDKs and project pins."
 ---
 
-## Usage
+## Check for an update
+
+```sh
+fvm update --check
+```
+
+Reports whether a newer FVM release is available without installing it.
+
+## Update FVM
 
 ```sh
 fvm update
 ```
 
-## Behavior
+To choose a specific FVM release, run `fvm update <version>` using a version from [FVM releases](https://github.com/mrgnhnt96/fvm/releases).
 
-The installed binary updates itself using checksummed GitHub release assets. See [Updating FVM](/guides/updating-fvm).
+If updating fails, rerun the [installer](/getting-started/installation).
 
-## Options
+## Update Flutter instead
 
-```text
-Update fvm itself to the newest release.
-
-Usage: fvm update [version]
--h, --help     Print this usage information.
-    --check    Report whether a newer fvm exists, without installing anything.
-
-Run "fvm help" to see global options.
-```
+`fvm update` updates the manager. To move a project to a newer Flutter SDK, follow [Updating FVM and Flutter](/guides/updating-fvm).

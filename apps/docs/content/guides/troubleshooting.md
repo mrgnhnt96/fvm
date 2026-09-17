@@ -1,36 +1,78 @@
 ---
 title: "Troubleshooting"
-description: "Find why Flutter selected the wrong SDK or failed to start."
+description: "Fix missing commands, incorrect Flutter versions, and editor setup."
 ---
 
-## Start with the explanation
+## The fvm command is not found
+
+With the default macOS or Linux installation, run:
+
+```sh
+"$HOME/.fvm/bin/fvm" setup --write-path-line
+```
+
+Open a new terminal and run `fvm --version`. For a custom installation, use the executable path printed by the installer. On Windows, add the directories printed by setup to your user PATH, then open a new terminal.
+
+If the executable is missing, [install FVM](/getting-started/installation) again.
+
+## The wrong fvm command runs
+
+An old shell function, alias, or PATH entry may take priority. Run the installed executable by its full path with `doctor`, for example:
+
+```sh
+"$HOME/.fvm/bin/fvm" doctor
+```
+
+Remove the conflicting setup identified in the output, rerun setup, and open a new terminal.
+
+## Flutter uses the wrong version
 
 ```sh
 fvm which
 fvm doctor
-fvm --verbose flutter --version
 ```
 
-## The wrong Flutter runs
+Check whether `FVM_FLUTTER_VERSION`, a parent `.fvmrc`, or your global default is selecting the version. Change the project version with `fvm use <version>`.
 
-Check for `FVM_FLUTTER_VERSION`, a parent `.fvmrc`, or a global default. If `fvm flutter` is correct but plain `flutter` is not, the shim is missing or a different PATH entry wins. Run setup and restart the shell.
+If `fvm flutter --version` is correct but `flutter --version` is not, repeat [Shell Setup](/getting-started/shell-setup). The FVM launcher must come first on PATH.
 
 ## The selected SDK is missing
 
-Run the installation command printed in the error. Explicit missing pins do not fall back silently. A channel needs a recorded mapping from `fvm install stable` or `fvm install beta`.
+Run the `fvm install` command printed in the error. For a new project checkout, run `fvm use <version>` with the version from `.fvmrc` to install it and create the editor link.
 
-## Download or checksum failure
+If FVM does not recognize `stable` or `beta`, install that channel first:
 
-Check connectivity to Google's Flutter release storage, then retry. A checksum mismatch prevents extraction. A release unavailable for the host architecture is reported rather than replaced with another architecture.
+```sh
+fvm install stable
+fvm use stable
+```
+
+## A download fails
+
+Check your network connection and proxy settings, then retry. FVM downloads its own updates from GitHub and Flutter SDKs from Google's Flutter storage.
+
+For a damaged SDK, reinstall its version:
+
+```sh
+fvm install 3.44.0 --force
+```
+
+If the release is unavailable for your computer, use `fvm list-remote` to find a supported version. If a checksum mismatch persists, do not use that download.
 
 ## The editor uses another SDK
 
-Run `fvm use <version>` to refresh `.fvm/flutter_sdk`, then configure the editor to use that Flutter SDK directory. On Windows, creating links can require Developer Mode or elevated privileges.
+Run `fvm use <version>` again and set the editor's Flutter SDK path to `.fvm/flutter_sdk` beside `.fvmrc`. Restart the editor. See [Quick Start](/getting-started/quick-start) for the VS Code setting.
 
-## Setup cannot find the FVM binary
+If Windows reports that it cannot create the SDK link, follow the error's instructions about permissions or Developer Mode, then rerun `fvm use`.
 
-Reinstall FVM with the [install script](/getting-started/installation), then run the setup command it prints. Keep the executable at a permanent path because the Flutter shim records its location.
+## Dart reports a different version
 
-## Dart differs from Flutter's Dart
+Use `fvm dart --version` to check the Dart bundled with your project's Flutter SDK. Plain `dart` may use a separate installation.
 
-That is expected when DVM or another standalone Dart is on PATH. Use `fvm dart` when you need the runtime bundled with Flutter.
+## Get more diagnostic output
+
+```sh
+fvm --verbose flutter --version
+```
+
+Use this alongside `fvm doctor` when you need more detail about a failure.

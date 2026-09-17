@@ -1,26 +1,16 @@
 ---
 title: "fvm list"
-description: "List installed SDKs and the names that point at them."
+description: "See which Flutter SDKs are installed on your computer."
 ---
 
-## Usage
+## List installed versions
 
 ```sh
 fvm list
-fvm ls
 ```
 
-## Behavior
+The output identifies the current project selection and global default, along with saved aliases and channels. `fvm ls` is a shorter spelling of the same command.
 
-The output marks the current project selection and shows aliases, channel mappings, and the global default. This reads the local cache.
+## Find a version to install
 
-## Options
-
-```text
-List installed SDKs, marking the global and the current project. (alias: ls)
-
-Usage: fvm list [arguments]
--h, --help    Print this usage information.
-
-Run "fvm help" to see global options.
-```
+Use [`fvm list-remote`](/commands/list-remote) to see releases you can download. Use [`fvm remove`](/commands/remove) to delete an installed version you no longer need.

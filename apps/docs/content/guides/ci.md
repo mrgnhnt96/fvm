@@ -1,28 +1,37 @@
 ---
 title: "Using FVM in CI"
-description: "Run a build against a concrete Flutter version without a shell profile."
+description: "Install your project\u2019s Flutter version and run tests in CI."
 ---
 
-## Install the manager
+## Install FVM and the project SDK
 
-Use the install script described in [Installation](/getting-started/installation). Cache `$FVM_HOME/versions` between builds where your CI provider supports it; include OS and CPU architecture in the cache key.
-
-## Install the pinned SDK
-
-Commit a concrete `.fvmrc`. On the build machine, explicitly install the version it names before executing tools. For example, for a repository pinned to `3.44.0`:
+Commit `.fvmrc` with a concrete Flutter version. On a macOS or Linux runner, this example installs FVM, makes it available to the current shell, and tests a project pinned to `3.44.0`:
 
 ```sh
+curl -fsSL https://raw.githubusercontent.com/mrgnhnt96/fvm/main/install.sh | sh
+export PATH="${FVM_HOME:-$HOME/.fvm}/bin:$PATH"
 fvm install 3.44.0
 fvm flutter pub get
 fvm flutter test
 ```
 
-No shim or startup-file edit is needed when commands are invoked through FVM. `fvm exec` is useful for tools that spawn Flutter or Dart themselves.
+Replace `3.44.0` with the version in your project's `.fvmrc`. Run the Flutter commands from the checked-out project directory. For Windows runners, use the [Windows installation steps](/getting-started/installation).
 
-## Override one job
+Use your CI provider's environment or PATH mechanism if installation and testing run in separate steps. A shell's `export` may not carry over to the next step.
+
+You do not need shell setup when invoking Flutter through `fvm flutter`. Use `fvm exec <command>` for scripts that call Flutter or Dart themselves.
+
+## Reuse downloaded SDKs
+
+Cache `$FVM_HOME/versions` (default: `~/.fvm/versions`) between jobs. Include the operating system, CPU architecture, and pinned Flutter version in the cache key. Keep the install command so a job also works with an empty cache.
+
+## Test another Flutter version
+
+Install the version before overriding the project pin. In a POSIX shell:
 
 ```sh
-FVM_FLUTTER_VERSION=3.44.0 fvm exec flutter test
+fvm install 3.44.0
+FVM_FLUTTER_VERSION=3.44.0 fvm flutter test
 ```
 
-An override selects a version; it does not install it. Keep the override and installation command in agreement. FVM forwards the child's exit status, so a failing test fails the job.
+A failing Flutter command returns a failing exit status to CI.

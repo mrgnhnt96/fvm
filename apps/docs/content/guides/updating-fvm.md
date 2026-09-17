@@ -1,24 +1,46 @@
 ---
 title: "Updating FVM"
-description: "Update the manager separately from the Flutter SDKs it manages."
+description: "Update FVM and choose when your projects move to newer Flutter releases."
 ---
 
-## Update the manager
+## Update FVM
 
 ```sh
+fvm update --check
 fvm update
 ```
 
-FVM replaces its executable using checksummed GitHub release assets. Your installed Flutter SDKs and project pins remain in place.
+`--check` reports whether an update is available. `fvm update` installs it. Your Flutter SDKs and project pins stay in place.
 
-## Refresh Flutter
+You can also rerun the [installer](/getting-started/installation). To install a specific FVM release, use `fvm update <version>` with a version from [FVM releases](https://github.com/mrgnhnt96/fvm/releases).
+
+## Update a project's Flutter SDK
+
+From your project directory:
 
 ```sh
 fvm install stable
+fvm use stable
+fvm flutter --version
+fvm flutter pub get
+fvm flutter test
 ```
 
-This refreshes the local stable-channel mapping. Projects pinned to a concrete version stay on that version; change their pin with `fvm use` when ready.
+The first command downloads the current stable release. The second updates `.fvmrc` and your editor's SDK link. Commit the changed `.fvmrc` after checking your app.
 
-## Version notices
+For a specific release, use `fvm use <version>` instead. Other projects keep their saved versions.
 
-Release builds can show a newer-FVM notice. Use `--no-version-check` to disable that check for an invocation. Version notices concern the manager, not Flutter.
+## Update the default for unpinned directories
+
+```sh
+fvm install stable
+fvm global stable
+```
+
+## Hide FVM update notices
+
+Use `--no-version-check` for a command where you do not want FVM update notices:
+
+```sh
+fvm --no-version-check flutter test
+```

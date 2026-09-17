@@ -1,28 +1,22 @@
 ---
 title: "fvm which"
-description: "Print the selected SDK and explain which rule chose it."
+description: "See which Flutter SDK will run and why it was selected."
 ---
 
-## Usage
+## Explain the current selection
 
 ```sh
 fvm which
+```
+
+Shows the version and whether it came from an environment override, a project pin, your global default, or PATH. `fvm current` runs the same command.
+
+## Print only the executable path
+
+```sh
 fvm which --path
-fvm current
 ```
 
-## Behavior
+Use this when a script needs the path to the Flutter executable.
 
-Use `--path` for scripting. The normal output includes the version and the source of the selection. See [Resolution Order](/versions/resolution-order).
-
-## Options
-
-```text
-Print the resolved SDK and which rule chose it. (alias: current)
-
-Usage: fvm which [arguments]
--h, --help    Print this usage information.
-    --path    Print only the path to the flutter executable, for scripting.
-
-Run "fvm help" to see global options.
-```
+If the result is unexpected, see [Resolution Order](/versions/resolution-order) or run [`fvm doctor`](/commands/doctor).

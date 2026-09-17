@@ -1,26 +1,25 @@
 ---
 title: "fvm remove"
-description: "Remove an SDK from the shared cache."
+description: "Free disk space by deleting an installed Flutter SDK."
 ---
 
-## Usage
+## Remove an unused version
 
 ```sh
+fvm list
 fvm remove 3.44.0
 ```
 
-## Behavior
+All projects using a version share its SDK. Check your other projects before removing it: they will need that version installed again to run.
 
-Removal refuses references it can detect unless `--force` is used. FVM cannot discover every project elsewhere on disk, so check your projects before removing a shared SDK.
+## If FVM refuses removal
 
-## Options
+Change the project pin, global default, or alias identified in the error, then retry. FVM can check local references but cannot find every project on your disk.
 
-```text
-Delete an installed SDK.
+To remove the SDK even when references still point to it:
 
-Usage: fvm remove <version> [--force]
--h, --help     Print this usage information.
--f, --force    Remove it even if something still points at it.
-
-Run "fvm help" to see global options.
+```sh
+fvm remove 3.44.0 --force
 ```
+
+`--force` (or `-f`) leaves those references in place. Repair affected projects with `fvm use <version>` or reinstall the removed version with `fvm install <version>`.

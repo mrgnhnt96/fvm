@@ -1,25 +1,29 @@
 ---
 title: "fvm global"
-description: "Set the fallback used outside pinned projects."
+description: "Choose the Flutter version used outside pinned projects."
 ---
 
-## Usage
+## Set your default
 
 ```sh
 fvm global 3.44.0
 ```
 
-## Behavior
+FVM installs the version if needed. Directories with a `.fvmrc` keep their project version; `FVM_FLUTTER_VERSION` also takes priority.
 
-A project pin and `FVM_FLUTTER_VERSION` both take precedence. The command installs a missing SDK. For channels, install the channel first to record its version.
+To use the current stable release:
 
-## Options
-
-```text
-Set the version used when no .fvmrc applies.
-
-Usage: fvm global <version>
--h, --help    Print this usage information.
-
-Run "fvm help" to see global options.
+```sh
+fvm install stable
+fvm global stable
 ```
+
+This saves a specific version number. Repeat both commands when you want to update the default.
+
+## Show your default
+
+```sh
+fvm global
+```
+
+To see what will run in your current directory, use [`fvm which`](/commands/which).

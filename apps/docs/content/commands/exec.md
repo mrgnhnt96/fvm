@@ -1,15 +1,25 @@
 ---
 title: "fvm exec"
-description: "Run any command with the selected SDK first on PATH."
+description: "Run a tool or script with your selected Flutter and Dart on PATH."
 ---
 
-## Usage
+## Run a command
 
 ```sh
-fvm exec flutter test
 fvm exec dart analyze
+fvm exec flutter test
 ```
 
-## Behavior
+The command and any tools it starts find your selected Flutter SDK's `flutter` and `dart` first on PATH. Your terminal's PATH is unchanged after it finishes.
 
-The child inherits your environment with the selected SDK bin directory prefixed to PATH. Nested tools find that SDK. All arguments after the command are passed through.
+## Run a script
+
+For a shell script that calls Flutter or Dart:
+
+```sh
+fvm exec sh tool/check.sh
+```
+
+Replace the script path with your own. All arguments after `fvm exec` belong to the command being run, including `--help`. FVM returns that command's exit status.
+
+Choose an SDK with [`fvm use`](/commands/use) before running the command.

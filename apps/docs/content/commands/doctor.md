@@ -1,25 +1,22 @@
 ---
 title: "fvm doctor"
-description: "Diagnose SDK selection, PATH, shims, and project links."
+description: "Find and fix problems with your FVM setup."
 ---
 
-## Usage
+## Check your setup
 
 ```sh
 fvm doctor
 ```
 
-## Behavior
+Run this from the affected project directory. Doctor checks your selected SDK, project configuration, editor link, and shell PATH. Follow the correction printed for each issue, then rerun the command.
 
-Doctor names conflicting shell functions, aliases, and PATH entries, malformed config, missing SDKs, and broken IDE links. Follow the specific remedy it prints, then rerun doctor.
+## Check Flutter itself
 
-## Options
-
-```text
-Check PATH order, shim health, symlinks and config validity.
-
-Usage: fvm doctor [arguments]
--h, --help    Print this usage information.
-
-Run "fvm help" to see global options.
+```sh
+fvm flutter doctor
 ```
+
+Use Flutter's doctor to check platform build tools and devices after FVM selects the right SDK.
+
+For missing commands or incorrect versions, see [Troubleshooting](/guides/troubleshooting).

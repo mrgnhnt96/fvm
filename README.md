@@ -1,141 +1,98 @@
-# fvm
+# FVM
 
-A per-project Flutter version manager, based on the behavior and implementation
-of [dvm](https://github.com/mrgnhnt96/dvm).
+Choose a Flutter version for each project and run its Flutter and Dart commands.
+Projects using the same version share one installed SDK.
 
-Keep Flutter SDKs in one cache, pin projects with `.fvmrc`, and let a PATH shim
-select the right Flutter whenever you change directories.
-
-Documentation: <https://fvm.mrgnhnt.com>
+[Documentation](https://fvm.mrgnhnt.com) · [Installation](https://fvm.mrgnhnt.com/getting-started/installation) · [Troubleshooting](https://fvm.mrgnhnt.com/guides/troubleshooting)
 
 ## Install
+
+On macOS or Linux:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/mrgnhnt96/fvm/main/install.sh | sh
 ```
 
-The script downloads and verifies a standalone binary. No Dart or Flutter SDK
-is required first. Follow the setup instructions it prints, then:
+You do not need Dart or Flutter installed first. Run the setup command printed
+by the installer. For the default location:
+
+```sh
+"$HOME/.fvm/bin/fvm" setup --write-path-line
+```
+
+Open a new terminal and run `fvm --version`.
+
+On Windows, download `fvm-windows-x64.zip` and its matching `.sha256` file from
+[FVM releases](https://github.com/mrgnhnt96/fvm/releases).
+Follow the [Windows installation steps](https://fvm.mrgnhnt.com/getting-started/installation)
+to verify the download, extract it, and configure PATH.
+
+## Set up a project
+
+From your Flutter project's root directory:
 
 ```sh
 fvm install stable
 fvm use stable --gitignore
-fvm flutter --version
-fvm dart --version
+fvm flutter pub get
+fvm flutter run
 ```
 
-On Windows, download `fvm-windows-x64.zip` from
-[GitHub Releases](https://github.com/mrgnhnt96/fvm/releases/latest), extract it,
-and run `fvm setup` for PATH instructions.
+This saves the installed stable release's **version number** in `.fvmrc`.
+The project stays on that version until you select another one.
+Commit `.fvmrc` and the `.gitignore` change; keep `.fvm/` out of Git.
 
-`use` installs a missing SDK, writes `.fvmrc`, and creates
-`.fvm/flutter_sdk` for IDEs. Commit `.fvmrc`; ignore `.fvm/`. Point VS Code's
-`dart.flutterSdkPath` at `.fvm/flutter_sdk`.
+For a specific release, run `fvm use 3.44.0 --gitignore` (replace the version
+with the one you need). FVM installs it if necessary. When joining an existing
+project, run `fvm use` with the version recorded in its `.fvmrc`.
 
-The compiled CLI creates its Flutter shim automatically after `install`, `use`,
-or `global` makes an SDK available. It prints PATH instructions. To explicitly
-set up the shim and add the PATH line to your shell startup file:
+## Configure your editor
 
-```sh
-fvm setup --write-path-line
-```
-
-Keep the compiled binary in a permanent location before setup: the shim records
-its absolute path. Plain `setup` prints instructions without editing your shell.
-The shim is `~/.fvm/shims/flutter` (`flutter.bat` on Windows). It must precede
-other Flutter installations on PATH. `fvm doctor` diagnoses conflicts.
-
-Only a Flutter shim is installed, so an existing DVM Dart shim can coexist.
-Use `fvm dart` or `fvm exec dart` when you need the Dart bundled with Flutter;
-`fvm exec` puts the selected Flutter SDK's `bin` first on the child's PATH.
-
-## Commands
-
-| Command | Behavior |
-| --- | --- |
-| `install <version\|channel\|alias> [--force]` | Download and verify an SDK; force reinstalls it |
-| `use <version\|channel\|alias> [--gitignore]` | Pin this project and create the IDE link |
-| `global <version\|channel\|alias>` | Set the fallback SDK |
-| `list` / `ls` | List installed SDKs |
-| `list-remote [--channel channel]` | List published releases for this host architecture |
-| `which` / `current` | Explain the selected SDK; `--path` prints just its launcher |
-| `flutter <args...>` | Forward arguments and exit status to Flutter |
-| `dart <args...>` | Run Dart bundled with the selected Flutter |
-| `exec <command> <args...>` | Run a command with the selected SDK on PATH |
-| `alias <name> <version\|channel\|alias>` | Save an alias |
-| `unalias <name>` | Remove an alias |
-| `remove <version\|alias>` | Remove an installed SDK |
-| `setup` | Create the Flutter shim and print PATH instructions |
-| `doctor` | Diagnose configuration, pins, IDE links, and shell/PATH issues |
-| `config color auto\|always\|never` | Save output color preferences |
-| `update` | Update a release-built FVM binary from GitHub Releases |
-
-Run a command with `--help` for its options. For `flutter`, `dart`, and `exec`,
-all arguments, including `--help`, belong to the child command.
-
-## Resolution
-
-The first matching rule wins:
-
-1. `FVM_FLUTTER_VERSION` environment override.
-2. The nearest `.fvmrc`, walking up from the current directory.
-3. The global default in `$FVM_HOME/config.json`.
-4. The next real Flutter on PATH, excluding FVM's own shim.
-5. An actionable error when no SDK can be selected.
+In VS Code, add this to your project's `.vscode/settings.json`:
 
 ```json
-{"flutter": "3.44.0"}
+{
+  "dart.flutterSdkPath": ".fvm/flutter_sdk"
+}
 ```
 
-Pins may also name a channel or alias. Channel resolution during execution is
-offline: `install stable` records the concrete version in config. Run it again
-to refresh that mapping. `FVM_HOME` defaults to `~/.fvm`; SDKs live under
-`versions/<version>`, temporary downloads under `cache/`.
+In Android Studio or IntelliJ, set the Flutter SDK path to the full path of
+`.fvm/flutter_sdk` inside your project. Restart the editor after changing it.
 
-Downloads use Flutter's official per-platform release manifests, select the
-host architecture, verify the manifest's SHA-256, and unpack ZIP or tar.xz
-archives before publishing the SDK. Stable and beta are supported; historical
-dev releases can be installed when present in the manifest. Main/master builds
-require a Git checkout and are not supported by this archive-based manager.
-
-## Development and distribution
+## Everyday use
 
 ```sh
-dart analyze
-(cd packages/fvm && dart test)
-bash tool/test_install_sh.sh
+fvm flutter test
+fvm dart analyze
+fvm which
+fvm list
 ```
 
-Tests use memory filesystems and local HTTP fixtures. CI runs on Linux, macOS,
-and Windows. `.github/workflows/release.yml` builds standalone binaries,
-stamps the version, packages checksummed release assets, and can publish a versioned
-release through a manual workflow dispatch. `install.sh` and `fvm update` target `mrgnhnt96/fvm`; they install
-checksummed binaries from the published releases.
+After shell setup, plain `flutter` also follows your project's version.
+Use `fvm dart` for the Dart bundled with Flutter; plain `dart` keeps your
+existing Dart setup.
 
-DVM's legacy cbracken migration is intentionally absent because its directory
-layout is specific to Dart. This is an independent implementation, not the
-pub.dev `fvm` package, and it does not migrate another manager's cache.
+To set a default outside pinned projects, run `fvm global <version>`.
+Use `fvm doctor` if the wrong SDK runs.
 
-## License
+## Update
 
-MIT. Adapted from DVM; see [LICENSE](LICENSE).
-
-## Documentation site
-
-The Jaspr site lives in `apps/docs` and uses the same layout, search, and GitHub
-Pages workflow as DVM. To work on it:
+Update FVM:
 
 ```sh
-dart pub get
-cd apps/docs
-dart run tool/build_search_index.dart
-dart run jaspr_cli:jaspr serve
+fvm update
 ```
 
-Run `dart test` from `apps/docs` to check navigation, content links, search, and
-the complete static build. After editing content, regenerate the committed
-search index. GitHub Actions → **Deploy docs** publishes the selected ref;
-choose `main` for the public site. Deployment is manual.
+Move the current project to the latest stable Flutter release:
 
-Pages uses the repository-level custom domain `fvm.mrgnhnt.com`, with a DNS
-CNAME pointing to `mrgnhnt96.github.io`. HTTPS enforcement redirects HTTP visitors so browser clipboard access works. Actions deployments do not need a CNAME file.
+```sh
+fvm install stable
+fvm use stable
+```
+
+Test your app and commit the changed `.fvmrc`. Other projects keep their
+saved versions.
+
+See the [command reference](https://fvm.mrgnhnt.com/commands/install) for all
+commands, or run `fvm <command> --help`. For `flutter`, `dart`, and `exec`,
+`--help` is passed to the tool you are running.

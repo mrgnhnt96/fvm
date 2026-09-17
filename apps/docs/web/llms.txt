@@ -1,0 +1,47 @@
+# FVM
+
+> FVM installs Flutter SDKs and selects a version for each project. Use it to run Flutter and its bundled Dart, configure an editor, and test projects in CI.
+
+These docs describe mrgnhnt96/fvm. Install this project's standalone binary using its installer or GitHub release assets; the pub.dev package named fvm is a different manager.
+
+Start with installation, then quick start. Run commands from the project directory. `fvm install stable` downloads the channel's current release; `fvm use stable` writes that release's concrete version number to `.fvmrc`. Commit `.fvmrc`, ignore `.fvm/`, and point the editor at `.fvm/flutter_sdk`. Use `fvm dart` for Flutter's bundled Dart.
+
+The links below provide the documentation as Markdown.
+
+## Get started
+
+- [Installation](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/getting-started/installation.md): Install FVM on macOS, Linux, or Windows without an existing Dart or Flutter SDK.
+- [Quick Start](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/getting-started/quick-start.md): Choose Flutter for your project, configure your editor, and run your app.
+- [Shell Setup](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/getting-started/shell-setup.md): Make the flutter command use your project’s selected SDK.
+
+## Choose Flutter versions
+
+- [Aliases and Channels](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/versions/aliases.md): Choose a Flutter channel or save a short name for a version.
+- [The .fvmrc File](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/versions/fvmrc.md): Share your project’s Flutter version with teammates.
+- [Resolution Order](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/versions/resolution-order.md): Find which Flutter version will run in your current directory.
+
+## Command reference
+
+- [fvm alias](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/commands/alias.md): Save a short name for a Flutter version.
+- [fvm config](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/commands/config.md): Choose when FVM uses colored terminal output.
+- [fvm dart](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/commands/dart.md): Run the Dart version included with your selected Flutter SDK.
+- [fvm doctor](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/commands/doctor.md): Find and fix problems with your FVM setup.
+- [fvm exec](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/commands/exec.md): Run a tool or script with your selected Flutter and Dart on PATH.
+- [fvm flutter](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/commands/flutter.md): Run Flutter using your project’s selected SDK.
+- [fvm global](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/commands/global.md): Choose the Flutter version used outside pinned projects.
+- [fvm install](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/commands/install.md): Download a Flutter SDK without changing your project’s selected version.
+- [fvm list-remote](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/commands/list-remote.md): Find Flutter releases available for your computer.
+- [fvm list](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/commands/list.md): See which Flutter SDKs are installed on your computer.
+- [fvm remove](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/commands/remove.md): Free disk space by deleting an installed Flutter SDK.
+- [fvm setup](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/commands/setup.md): Make fvm and your project’s flutter command available in the terminal.
+- [fvm unalias](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/commands/unalias.md): Delete a saved name without deleting its Flutter SDK.
+- [fvm update](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/commands/update.md): Install a newer FVM release while keeping your SDKs and project pins.
+- [fvm use](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/commands/use.md): Choose a project’s Flutter version and configure its editor SDK link.
+- [fvm which](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/commands/which.md): See which Flutter SDK will run and why it was selected.
+
+## Guides
+
+- [Using FVM in CI](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/guides/ci.md): Install your project’s Flutter version and run tests in CI.
+- [Using FVM alongside DVM](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/guides/dvm.md): Choose the right Dart command when you also use standalone Dart.
+- [Troubleshooting](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/guides/troubleshooting.md): Fix missing commands, incorrect Flutter versions, and editor setup.
+- [Updating FVM](https://raw.githubusercontent.com/mrgnhnt96/fvm/main/apps/docs/content/guides/updating-fvm.md): Update FVM and choose when your projects move to newer Flutter releases.

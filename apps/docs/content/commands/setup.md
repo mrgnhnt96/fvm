@@ -1,29 +1,40 @@
 ---
 title: "fvm setup"
-description: "Create the Flutter shim and configure shell integration."
+description: "Make fvm and your project\u2019s flutter command available in the terminal."
 ---
 
-## Usage
+## Configure your shell
+
+On macOS or Linux:
 
 ```sh
-fvm setup
 fvm setup --write-path-line
 ```
 
-## Behavior
+Setup creates the Flutter launcher and adds the required PATH entries to your shell startup file, backing it up first. Open a new terminal afterward.
 
-Plain setup prints instructions. `--write-path-line` edits the appropriate startup file with a backup. The shim records the FVM binary’s absolute path. See [The Shim and Your PATH](/getting-started/shell-setup).
+If `fvm` is not on PATH yet, use its full installed path. For the default macOS or Linux installation:
 
-## Options
-
-```text
-Install the shims and print the PATH line to add.
-
-Usage: fvm setup [arguments]
--h, --help                Print this usage information.
-    --fvm-path=<path>     The fvm binary to bake into the shim. Defaults to the running one; needed when running from source.
-    --write-path-line     Add the PATH line to your shell startup file instead of just printing it. Backs the file up first, and does nothing if the line is already there. Not available for PowerShell, which takes PATH from your environment rather than a startup file.
-    --remove-path-line    Take the PATH line --write-path-line added back out, leaving the shims in place. A line you added by hand is left alone.
-
-Run "fvm help" to see global options.
+```sh
+"$HOME/.fvm/bin/fvm" setup --write-path-line
 ```
+
+## View instructions without editing your shell
+
+```sh
+fvm setup
+```
+
+This creates the launcher and prints the PATH instructions. On Windows, add the printed directories to your user PATH manually; PowerShell does not support `--write-path-line`.
+
+## Remove an automatic PATH entry
+
+```sh
+fvm setup --remove-path-line
+```
+
+This removes the line added by setup, leaving your SDKs and manually added lines alone. Restart the terminal afterward.
+
+If you move the FVM executable, run setup from its new location. `--fvm-path=<path>` lets you explicitly select the executable the launcher should use.
+
+See [Shell Setup](/getting-started/shell-setup) to verify the result.

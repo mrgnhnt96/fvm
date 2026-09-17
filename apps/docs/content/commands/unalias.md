@@ -1,25 +1,16 @@
 ---
 title: "fvm unalias"
-description: "Remove a saved alias."
+description: "Delete a saved name without deleting its Flutter SDK."
 ---
 
-## Usage
+## Remove an alias
 
 ```sh
 fvm unalias work
 ```
 
-## Behavior
+The SDK remains installed. Projects pinned to a concrete version keep working.
 
-Removing an alias does not delete its SDK. Project pins that name the alias need to be changed or the alias recreated.
+If you manually put this alias in `.fvmrc`, replace it by running `fvm use <version>`. Other aliases that refer to the removed name also need updating.
 
-## Options
-
-```text
-Remove a named version.
-
-Usage: fvm unalias <name>
--h, --help    Print this usage information.
-
-Run "fvm help" to see global options.
-```
+To remove the SDK itself, use [`fvm remove`](/commands/remove).

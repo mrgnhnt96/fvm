@@ -1,27 +1,26 @@
 ---
 title: "fvm config"
-description: "Read or save FVM output preferences."
+description: "Choose when FVM uses colored terminal output."
 ---
 
-## Usage
+## Show your color preference
 
 ```sh
 fvm config color
-fvm config color always
+```
+
+## Save a preference
+
+```sh
 fvm config color auto
 ```
 
-## Behavior
+Choose `auto`, `always`, or `never`. `auto` adapts to the terminal and respects `NO_COLOR` and `TERM=dumb`.
 
-Color modes are `auto`, `always`, and `never`. A top-level `--color` flag overrides the saved preference for one command. Auto respects `NO_COLOR` and `TERM=dumb`. Child tool output is not changed.
+## Override one command
 
-## Options
-
-```text
-Read or save preferences (color: auto, always, never).
-
-Usage: fvm config color [auto|always|never]
--h, --help    Print this usage information.
-
-Run "fvm help" to see global options.
+```sh
+fvm --color=never list
 ```
+
+This overrides the saved preference for that invocation. It controls FVM's output; Flutter and Dart control their own output.

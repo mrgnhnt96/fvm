@@ -1,26 +1,25 @@
 ---
 title: "fvm alias"
-description: "Give a version a name, or list saved names."
+description: "Save a short name for a Flutter version."
 ---
 
-## Usage
+## Create or change an alias
 
 ```sh
 fvm alias work 3.44.0
+fvm use work
+```
+
+The alias is saved on your computer. `fvm use work` writes the version number to `.fvmrc`, so teammates do not need to create the same alias.
+
+Creating an alias does not install the SDK. Selecting it with `fvm use` installs the version if needed.
+
+## List aliases
+
+```sh
 fvm alias list
 ```
 
-## Behavior
+An alias can also name a channel or another alias. Install a channel before using it, and avoid aliases that point back to each other.
 
-Aliases live in the machine-local config. They may target versions, channels, or other aliases. Concrete pins are easier to share with teammates.
-
-## Options
-
-```text
-Give a version a name, or list the names you have.
-
-Usage: fvm alias <name> <version> | alias list
--h, --help    Print this usage information.
-
-Run "fvm help" to see global options.
-```
+Remove a name with [`fvm unalias`](/commands/unalias).

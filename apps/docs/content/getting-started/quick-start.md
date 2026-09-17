@@ -1,11 +1,11 @@
 ---
 title: "Quick Start"
-description: "Install Flutter, pin a project, and run its bundled tools."
+description: "Choose Flutter for your project, configure your editor, and run your app."
 ---
 
-## Install and pin
+[Install FVM](/getting-started/installation) first. Run the following commands from your Flutter project's root directory.
 
-From your project directory:
+## Choose Flutter for this project
 
 ```sh
 fvm install stable
@@ -13,29 +13,52 @@ fvm use stable --gitignore
 fvm flutter --version
 ```
 
-For a reproducible team pin, use a concrete release version instead of a moving channel:
+`install stable` downloads the current stable Flutter release. `use stable` saves that release's **version number** in `.fvmrc`, so the project stays on it until you choose another version.
+
+To use a particular release instead:
 
 ```sh
 fvm use 3.44.0 --gitignore
 ```
 
-Commit `.fvmrc` and the `.gitignore` change. Keep `.fvm/` out of Git.
+`use` downloads the version if it is missing. Find other available versions with `fvm list-remote`.
+
+Commit `.fvmrc` and the `.gitignore` change so teammates use the same version. The `.fvm/` directory stays out of Git.
 
 ## Configure your editor
 
-Point VS Code's `dart.flutterSdkPath` at `.fvm/flutter_sdk`. In Android Studio or IntelliJ, use that directory as the Flutter SDK path. The link changes when you select another version.
+For VS Code, add this setting to your project's `.vscode/settings.json` (merge it with any existing settings):
 
-## Use the tools
+```json
+{
+  "dart.flutterSdkPath": ".fvm/flutter_sdk"
+}
+```
+
+For Android Studio or IntelliJ, set the Flutter SDK path to the full path of your project's `.fvm/flutter_sdk` directory. Restart the editor if it still shows the previous SDK.
+
+## Run your project
 
 ```sh
 fvm flutter pub get
+fvm flutter run
 fvm flutter test
-fvm dart --version
-fvm exec dart analyze
+fvm dart analyze
 ```
 
-Run `fvm setup --write-path-line` and restart your shell to make plain `flutter` follow the pin. Run `fvm global stable` to select a fallback outside pinned projects.
+After [shell setup](/getting-started/shell-setup), you can also run plain `flutter` from this directory.
 
-## Clone another project
+## Join an existing project
 
-Read its `.fvmrc`, then install and select the version it names with `fvm use <version>`. FVM does not download an SDK during a normal Flutter invocation: missing versions produce an installation instruction.
+Open its `.fvmrc` and run `fvm use` with the version shown there. For example, if it contains `{"flutter": "3.44.0"}`:
+
+```sh
+fvm use 3.44.0
+fvm flutter pub get
+```
+
+This installs the SDK if needed and creates the editor's SDK link on your computer. Running `fvm flutter` alone does not install a missing SDK.
+
+## Change versions later
+
+Run `fvm use <version>` with the new version and commit the updated `.fvmrc`. To use a newer stable release, repeat both `fvm install stable` and `fvm use stable`.

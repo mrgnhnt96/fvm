@@ -36,7 +36,7 @@ void main() {
             // text — `syntax_highlight_lite` throws on the null grammar and the
             // whole route fails to pre-render with a 500. `dockerfile` in
             // content/guides/ci.md is how that was found.
-            for (final lang in const ['sh', 'bash', 'text', 'json', 'yaml', 'dart', 'dockerfile'])
+            for (final lang in const ['sh', 'bash', 'text', 'json', 'yaml', 'dart', 'dockerfile', 'powershell'])
               lang: '{"name":"$lang","scopeName":"source.$lang","patterns":[]}',
           },
         ),

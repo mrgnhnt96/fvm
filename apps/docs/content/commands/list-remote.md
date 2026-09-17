@@ -1,29 +1,26 @@
 ---
 title: "fvm list-remote"
-description: "List Flutter releases published for this host."
+description: "Find Flutter releases available for your computer."
 ---
 
-## Usage
+## List stable releases
 
 ```sh
 fvm list-remote
-fvm list-remote --channel beta --all
 ```
 
-## Behavior
+Shows the newest 25 stable releases available for your operating system and CPU architecture. This command requires a network connection.
 
-The default is the newest 25 stable releases. Results are sorted semantically and filtered for the host architecture. `--all` shows the full list.
+## Choose a channel or show all releases
 
-## Options
-
-```text
-List the releases available from the Flutter archive.
-
-Usage: fvm list-remote [arguments]
--h, --help       Print this usage information.
--c, --channel    Which release channel to list.
-                 [stable (default), beta, dev]
-    --all        Show every release instead of the newest 25.
-
-Run "fvm help" to see global options.
+```sh
+fvm list-remote --channel beta
+fvm list-remote --all
+fvm list-remote --channel dev --all
 ```
+
+`--channel` (or `-c`) accepts `stable`, `beta`, or `dev`. `--all` includes older releases. Historical dev releases may be available; `main` and `master` builds are not supported.
+
+## Install a listed release
+
+Run `fvm use <version>` to install it and select it for your project, or `fvm install <version>` to download it without changing your project.
