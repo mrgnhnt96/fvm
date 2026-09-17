@@ -30,7 +30,7 @@ def main():
     if origin_url.scheme == 'http' and origin_url.hostname not in {'localhost', '127.0.0.1', '::1'}:
         # Check the server separately: Chrome may upgrade HTTP on its own,
         # hiding a missing redirect that affects other browsers.
-        with urllib.request.urlopen(args.origin.rstrip('/') + '/getting-started/installation/', timeout=30) as response:
+        with urllib.request.urlopen(args.origin.rstrip('/') + '/', timeout=30) as response:
             resolved = response.geturl()
         print(f'HTTP resolves to {resolved}', flush=True)
         assert urlsplit(resolved).scheme == 'https', 'Production HTTP must redirect to HTTPS so clipboard access is available'
@@ -59,7 +59,7 @@ def main():
         browser = Chrome(target['webSocketDebuggerUrl'])
         browser.send('Page.enable')
         browser.send('Runtime.enable')
-        browser.send('Page.navigate', url=args.origin.rstrip('/') + '/getting-started/installation/')
+        browser.send('Page.navigate', url=args.origin.rstrip('/') + '/')
         assert wait_for(lambda: browser.eval("!!document.querySelector('.code-block button')"), timeout=30), 'No code copy button'
         context = browser.eval("({url: location.href, secure: isSecureContext, clipboard: !!navigator.clipboard})")
         print(json.dumps(context), flush=True)

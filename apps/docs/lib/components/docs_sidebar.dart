@@ -1,11 +1,6 @@
 /// The docs sidebar: collapsible, icon-labelled groups driven by
 /// `lib/src/navigation.dart`.
 ///
-/// Replaces `jaspr_content`'s flat [Sidebar], which renders every group
-/// expanded. The command reference alone is fifteen pages, so a fully expanded
-/// sidebar is a long scroll with no landmarks; collapsing all but the active
-/// group turns it into a four-line menu.
-///
 /// Built on `<details>`/`<summary>` so it collapses without JavaScript and is
 /// keyboard- and screen-reader-navigable for free.
 library;

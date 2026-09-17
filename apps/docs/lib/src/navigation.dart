@@ -53,121 +53,20 @@ final class NavGroup {
 }
 
 /// Pages that sit above the grouped navigation.
-const List<NavItem> topLevelNavigation = [NavItem('Introduction', '/', summary: 'Flutter versions for every project.')];
+const List<NavItem> topLevelNavigation = [
+  NavItem('Getting Started', '/', summary: 'Install FVM and run your first project.'),
+];
 
 const List<NavGroup> navigation = [
   NavGroup(
-    "Get Started",
-    icon: NavIcons.rocket,
-    items: [
-      NavItem(
-        "Installation",
-        "/getting-started/installation",
-        summary: "Install FVM on macOS, Linux, or Windows without an existing Dart or Flutter SDK.",
-      ),
-      NavItem(
-        "Quick Start",
-        "/getting-started/quick-start",
-        summary: "Choose Flutter for your project, configure your editor, and run your app.",
-      ),
-      NavItem(
-        "Shell Setup",
-        "/getting-started/shell-setup",
-        summary: "Make the flutter command use your project’s selected SDK.",
-      ),
-    ],
-  ),
-  NavGroup(
-    "Pinning Versions",
-    icon: NavIcons.pin,
-    items: [
-      NavItem(
-        "The .fvmrc File",
-        "/versions/fvmrc",
-        summary: "Share your project’s Flutter version with teammates.",
-      ),
-      NavItem(
-        "Aliases and Channels",
-        "/versions/aliases",
-        summary: "Choose a Flutter channel or save a short name for a version.",
-      ),
-      NavItem(
-        "Resolution Order",
-        "/versions/resolution-order",
-        summary: "Find which Flutter version will run in your current directory.",
-      ),
-    ],
-  ),
-  NavGroup(
-    "Command Reference",
-    icon: NavIcons.terminal,
-    items: [
-      NavItem(
-        "fvm install",
-        "/commands/install",
-        summary: "Download a Flutter SDK without changing your project’s selected version.",
-      ),
-      NavItem(
-        "fvm use",
-        "/commands/use",
-        summary: "Choose a project’s Flutter version and configure its editor SDK link.",
-      ),
-      NavItem("fvm global", "/commands/global", summary: "Choose the Flutter version used outside pinned projects."),
-      NavItem("fvm list", "/commands/list", summary: "See which Flutter SDKs are installed on your computer."),
-      NavItem(
-        "fvm list-remote",
-        "/commands/list-remote",
-        summary: "Find Flutter releases available for your computer.",
-      ),
-      NavItem("fvm remove", "/commands/remove", summary: "Free disk space by deleting an installed Flutter SDK."),
-      NavItem("fvm alias", "/commands/alias", summary: "Save a short name for a Flutter version."),
-      NavItem("fvm unalias", "/commands/unalias", summary: "Delete a saved name without deleting its Flutter SDK."),
-      NavItem("fvm which", "/commands/which", summary: "See which Flutter SDK will run and why it was selected."),
-      NavItem("fvm flutter", "/commands/flutter", summary: "Run Flutter using your project’s selected SDK."),
-      NavItem("fvm dart", "/commands/dart", summary: "Run the Dart version included with your selected Flutter SDK."),
-      NavItem(
-        "fvm exec",
-        "/commands/exec",
-        summary: "Run a tool or script with your selected Flutter and Dart on PATH.",
-      ),
-      NavItem(
-        "fvm setup",
-        "/commands/setup",
-        summary: "Make fvm and your project’s flutter command available in the terminal.",
-      ),
-      NavItem("fvm doctor", "/commands/doctor", summary: "Find and fix problems with your FVM setup."),
-      NavItem("fvm config", "/commands/config", summary: "Choose when FVM uses colored terminal output."),
-      NavItem(
-        "fvm update",
-        "/commands/update",
-        summary: "Install a newer FVM release while keeping your SDKs and project pins.",
-      ),
-    ],
-  ),
-  NavGroup(
-    "Guides",
+    'Using FVM',
     icon: NavIcons.book,
     items: [
-      NavItem(
-        "Using FVM alongside DVM",
-        "/guides/dvm",
-        summary: "Choose the right Dart command when you also use standalone Dart.",
-      ),
-      NavItem(
-        "Using FVM in CI",
-        "/guides/ci",
-        summary: "Install your project’s Flutter version and run tests in CI.",
-      ),
-      NavItem(
-        "Updating FVM",
-        "/guides/updating-fvm",
-        summary: "Update FVM and choose when your projects move to newer Flutter releases.",
-      ),
-      NavItem(
-        "Troubleshooting",
-        "/guides/troubleshooting",
-        summary: "Fix missing commands, incorrect Flutter versions, and editor setup.",
-      ),
+      NavItem('Managing Versions', '/versions', summary: 'Project pins, channels, aliases, and defaults.'),
+      NavItem('Commands', '/commands', summary: 'All FVM commands and options.'),
+      NavItem('Updating', '/updating', summary: 'Update FVM and Flutter.'),
+      NavItem('CI', '/ci', summary: 'Install and test your project in CI.'),
+      NavItem('Troubleshooting', '/troubleshooting', summary: 'Fix command, SDK, and editor problems.'),
     ],
   ),
 ];

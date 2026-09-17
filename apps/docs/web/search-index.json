@@ -3,574 +3,213 @@
   "docs": [
     {
       "u": "/",
-      "t": "FVM",
-      "d": "Flutter versions for every project.",
+      "t": "Getting Started",
+      "d": "Install FVM and run your first project.",
       "s": [
         {
-          "b": "FVM lets each project use its own Flutter version. Install an SDK once and share it across projects that use the same version."
+          "b": "FVM lets each project use its own Flutter version. Projects on the same version share one installed SDK. You do not need Dart or Flutter installed first."
         },
         {
-          "h": "Get started",
-          "a": "get-started",
-          "b": "1. Install FVM on your computer. 2. Set up your project and choose its Flutter version. 3. Run fvm flutter and fvm dart from the project directory. You do not need Dart or Flutter installed before installing FVM."
+          "h": "Installation",
+          "a": "installation",
+          "b": ""
         },
         {
-          "h": "Everyday commands",
-          "a": "everyday-commands",
-          "b": "fvm flutter pub get fvm flutter run fvm flutter test fvm dart analyze Want to type just flutter? Follow Shell Setup."
-        },
-        {
-          "h": "Choose your next task",
-          "a": "choose-your-next-task",
-          "b": "Change a project's Flutter version. Set a default for other directories. Find available Flutter releases. Update FVM or Flutter. Run your project in CI. Fix setup or SDK selection problems. Documentation for AI assistants is also available."
-        }
-      ]
-    },
-    {
-      "u": "/getting-started/installation",
-      "t": "Installation",
-      "d": "Install FVM on macOS, Linux, or Windows without an existing Dart or Flutter SDK.",
-      "g": "Get Started",
-      "s": [
-        {
-          "h": "Install FVM on macOS or Linux",
-          "a": "install-fvm-on-macos-or-linux",
-          "b": "Run the install script: curl -fsSL https://raw.githubusercontent.com/mrgnhnt96/fvm/main/install.sh sh You need curl, an unzip tool (unzip or Python 3), and a checksum tool (sha256sum, shasum, or openssl). You do not need Dart or Flutter first. Run the setup command printed by the installer. With the default install location, it is: \"$HOME/.fvm/bin/fvm\" setup --write-path-line Close and reopen your terminal, then check the installation: fvm --version If the installer reports an existing fvm shell function or alias, follow its instructions to remove the conflict before running setup."
+          "h": "Install script for macOS and Linux",
+          "a": "install-script-for-macos-and-linux",
+          "b": "Run the install script: curl -fsSL https://raw.githubusercontent.com/mrgnhnt96/fvm/main/install.sh sh You need curl, an unzip tool (unzip or Python 3), and a checksum tool (sha256sum, shasum, or openssl). Run the setup command printed by the installer. For the default location: \"$HOME/.fvm/bin/fvm\" setup --write-path-line Setup backs up your shell startup file and adds the PATH entries. Open a new terminal and check: fvm --version If the installer reports a conflicting fvm function or alias, follow its instructions before running setup."
         },
         {
           "h": "Install FVM on Windows",
           "a": "install-fvm-on-windows",
-          "b": "1. Open FVM releases and choose a release containing fvm-windows-x64.zip. 2. Download that ZIP and its matching .sha256 file. In PowerShell, run Get-FileHash .\\fvm-windows-x64.zip -Algorithm SHA256 and compare the hash with the .sha256 file. 3. Extract fvm.exe to a permanent folder, such as C:\\Tools\\fvm. 4. Run setup using the full path: & \"C:\\Tools\\fvm\\fvm.exe\" setup Add the executable's folder and the shims folder printed by setup to your user PATH in Windows Environment Variables. Put the shims folder before any other Flutter installation. Open a new terminal and run fvm --version. Windows setup prints the paths to add; --write-path-line is not available for PowerShell."
+          "b": "1. Open FVM releases. Download fvm-windows-x64.zip and its matching .sha256 file from the same release. 2. Run Get-FileHash .\\fvm-windows-x64.zip -Algorithm SHA256 in PowerShell and compare the hash with the .sha256 file. 3. Extract fvm.exe to a permanent folder, such as C:\\Tools\\fvm. 4. Run setup using its full path: & \"C:\\Tools\\fvm\\fvm.exe\" setup Add the executable's folder and the shims folder printed by setup to your user PATH in Windows Environment Variables. Put the shims folder before other Flutter installations. Open a new terminal and run fvm --version."
         },
         {
-          "h": "Choose a different install location",
-          "a": "choose-a-different-install-location",
-          "b": "On macOS or Linux, set FVM_HOME when running the installer: curl -fsSL https://raw.githubusercontent.com/mrgnhnt96/fvm/main/install.sh FVM_HOME=\"$HOME/tools/fvm\" sh Also set FVM_HOME to that same directory in your shell startup file for future commands. Run the setup command printed by this installation. To install a specific FVM release, set FVM_VERSION to a version listed on FVM releases: curl -fsSL https://raw.githubusercontent.com/mrgnhnt96/fvm/main/install.sh FVM_VERSION=\" \" sh Replace before running the command."
+          "h": "Custom location or FVM release",
+          "a": "custom-location-or-fvm-release",
+          "b": "On macOS or Linux, set FVM_HOME to choose an installation directory: curl -fsSL https://raw.githubusercontent.com/mrgnhnt96/fvm/main/install.sh FVM_HOME=\"$HOME/tools/fvm\" sh Set FVM_HOME to that same directory in your shell startup file for future commands, then run the setup command printed by the installer. To choose a specific FVM release, set FVM_VERSION on the installer process instead. For example, use FVM_VERSION=\" \" sh at the end of the install command, replacing the placeholder with a version from FVM releases."
         },
         {
-          "h": "Next: set up a project",
-          "a": "next-set-up-a-project",
-          "b": "Follow Quick Start to install Flutter and select your project's version."
-        }
-      ]
-    },
-    {
-      "u": "/getting-started/quick-start",
-      "t": "Quick Start",
-      "d": "Choose Flutter for your project, configure your editor, and run your app.",
-      "g": "Get Started",
-      "s": [
-        {
-          "b": "Install FVM first. Run the following commands from your Flutter project's root directory."
-        },
-        {
-          "h": "Choose Flutter for this project",
-          "a": "choose-flutter-for-this-project",
-          "b": "fvm install stable fvm use stable --gitignore fvm flutter --version install stable downloads the current stable Flutter release. use stable saves that release's version number in .fvmrc, so the project stays on it until you choose another version. To use a particular release instead: fvm use 3.44.0 --gitignore use downloads the version if it is missing. Find other available versions with fvm list-remote. Commit .fvmrc and the .gitignore change so teammates use the same version. The .fvm/ directory stays out of Git."
-        },
-        {
-          "h": "Configure your editor",
-          "a": "configure-your-editor",
-          "b": "For VS Code, add this setting to your project's .vscode/settings.json (merge it with any existing settings): { \"dart.flutterSdkPath\": \".fvm/flutter_sdk\" } For Android Studio or IntelliJ, set the Flutter SDK path to the full path of your project's .fvm/flutter_sdk directory. Restart the editor if it still shows the previous SDK."
-        },
-        {
-          "h": "Run your project",
-          "a": "run-your-project",
-          "b": "fvm flutter pub get fvm flutter run fvm flutter test fvm dart analyze After shell setup, you can also run plain flutter from this directory."
+          "h": "Quick start",
+          "a": "quick-start",
+          "b": "From your Flutter project's root directory: fvm install stable fvm use stable --gitignore fvm flutter --version install stable downloads the current stable release. use stable saves that release's version number in .fvmrc. The project stays on that version until you choose another one. For a specific release, use fvm use 3.44.0 --gitignore, replacing the version with the one you need. FVM installs it if necessary. Find available releases with fvm list-remote. Commit .fvmrc and the .gitignore change. Keep .fvm/ out of Git."
         },
         {
           "h": "Join an existing project",
           "a": "join-an-existing-project",
-          "b": "Open its .fvmrc and run fvm use with the version shown there. For example, if it contains {\"flutter\": \"3.44.0\"}: fvm use 3.44.0 fvm flutter pub get This installs the SDK if needed and creates the editor's SDK link on your computer. Running fvm flutter alone does not install a missing SDK."
+          "b": "Read the version in .fvmrc, then select it. For {\"flutter\": \"3.44.0\"}: fvm use 3.44.0 fvm flutter pub get This installs the SDK if needed and creates the editor link on your computer. Running fvm flutter alone does not install a missing SDK."
         },
         {
-          "h": "Change versions later",
-          "a": "change-versions-later",
-          "b": "Run fvm use with the new version and commit the updated .fvmrc. To use a newer stable release, repeat both fvm install stable and fvm use stable."
+          "h": "Editor setup",
+          "a": "editor-setup",
+          "b": "In VS Code, merge this setting into your project's .vscode/settings.json: { \"dart.flutterSdkPath\": \".fvm/flutter_sdk\" } In Android Studio or IntelliJ, set the Flutter SDK path to the full path of .fvm/flutter_sdk inside your project. Restart the editor if it still shows the previous SDK."
+        },
+        {
+          "h": "Run your app",
+          "a": "run-your-app",
+          "b": "fvm flutter pub get fvm flutter run fvm flutter test fvm dart analyze Use fvm dart for the Dart bundled with your project's Flutter SDK. Plain dart keeps your existing Dart setup."
+        },
+        {
+          "h": "Shell setup",
+          "a": "shell-setup",
+          "b": "After the setup step above, plain flutter also follows your project's version. From a configured project, check: flutter --version fvm which fvm doctor FVM's launcher, called a shim, must come before other Flutter installations on PATH. Follow fvm doctor if the wrong version runs. To manage PATH yourself, run fvm setup and follow its printed instructions. On Windows, update your user PATH manually; PowerShell does not support --write-path-line. If you move the FVM executable, run setup from its new location. To undo the automatic PATH edit, run fvm setup --remove-path-line and open a new terminal. This leaves manually added PATH entries and installed SDKs in place."
+        },
+        {
+          "h": "Next steps",
+          "a": "next-steps",
+          "b": "Manage versions: project pins, channels, aliases, and defaults. Commands: all FVM commands and options. Update FVM and Flutter. Run in CI. Troubleshoot your setup. Documentation for AI assistants is also available."
         }
       ]
     },
     {
-      "u": "/getting-started/shell-setup",
-      "t": "Shell Setup",
-      "d": "Make the flutter command use your project’s selected SDK.",
-      "g": "Get Started",
+      "u": "/versions",
+      "t": "Managing Versions",
+      "d": "Project pins, channels, aliases, and defaults.",
+      "g": "Using FVM",
       "s": [
         {
-          "h": "Enable the flutter command",
-          "a": "enable-the-flutter-command",
-          "b": "Shell setup lets you type flutter instead of fvm flutter. If you already ran setup during installation and reopened your terminal, you can skip this step. On macOS or Linux with the default installation: \"$HOME/.fvm/bin/fvm\" setup --write-path-line Setup backs up your shell startup file and adds the required PATH entries. Open a new terminal afterward. On Windows, run fvm setup and add the printed directories to your user PATH in Environment Variables. See Installation if fvm is not yet available."
+          "h": "Project pins",
+          "a": "project-pins",
+          "b": "From your project's root directory: fvm use 3.44.0 --gitignore FVM installs the version if needed, writes .fvmrc, and updates .fvm/flutter_sdk for your editor: {\"flutter\": \"3.44.0\"} Commit .fvmrc and the .gitignore change; keep .fvm/ out of Git. Teammates run fvm use with that version after cloning. See editor setup."
         },
         {
-          "h": "Check your setup",
-          "a": "check-your-setup",
-          "b": "From a project where you have run fvm use: flutter --version fvm which fvm doctor FVM's launcher, called a shim, must come before other Flutter installations on PATH. If the wrong Flutter runs, follow the corrections printed by fvm doctor."
+          "h": "Nested projects",
+          "a": "nested-projects",
+          "b": "Commands use the nearest .fvmrc in your current directory or a parent. Running fvm use in a subdirectory updates that same pin. To give a nested project its own version, run this from its root: fvm use 3.44.0 --here --gitignore"
         },
         {
-          "h": "Set up PATH manually",
-          "a": "set-up-path-manually",
-          "b": "Run fvm setup to create the launcher and print the PATH instructions for your shell. Follow those instructions instead of using --write-path-line if you manage your startup file yourself. Keep the FVM executable in its installed location. If you move it, run setup again using its new path."
+          "h": "Existing .fvmrc formats",
+          "a": "existing-fvmrc-formats",
+          "b": "FVM also accepts a bare version on one line, or a JSON flutter value naming a channel or alias. Those names must be available on every computer. Prefer the concrete version number written by fvm use for shared projects."
         },
         {
-          "h": "Run Dart",
-          "a": "run-dart",
-          "b": "Use fvm dart for the Dart version included with your selected Flutter SDK: fvm dart --version Setup does not change plain dart. If you use DVM, see Using FVM alongside DVM."
+          "h": "Channels and aliases",
+          "a": "channels-and-aliases",
+          "b": "To select the current stable release: fvm install stable fvm use stable Install the channel first so FVM knows its version. use stable saves the version number, so later channel updates do not move the project. Repeat both commands when you want to upgrade. beta works the same way. Historical dev releases may appear in fvm list-remote --channel dev; main and master builds are not supported."
         },
         {
-          "h": "Remove the automatic PATH change",
-          "a": "remove-the-automatic-path-change",
-          "b": "fvm setup --remove-path-line Open a new terminal afterward. This removes the line added by --write-path-line; it leaves manually added PATH entries, FVM, and your SDKs in place."
+          "h": "Save a version shortcut",
+          "a": "save-a-version-shortcut",
+          "b": "fvm alias work 3.44.0 fvm use work fvm alias list fvm unalias work Aliases are local to your computer. fvm use work saves the version number in .fvmrc, so teammates do not need your alias. Removing the alias leaves the SDK installed. If you manually put a channel or alias in .fvmrc, FVM uses its saved value on your computer. It does not fetch a new release when you run Flutter. Refresh a channel with fvm install stable or fvm install beta."
+        },
+        {
+          "h": "Global default",
+          "a": "global-default",
+          "b": "Choose a version for directories without a project pin: fvm global 3.44.0 FVM installs the version if needed. Run fvm global without an argument to view the default. To choose stable, run fvm install stable followed by fvm global stable; this also saves a specific version number."
+        },
+        {
+          "h": "Resolution order",
+          "a": "resolution-order",
+          "b": "Run fvm which to see which SDK will run and why. FVM uses the first selection that applies: 1. The FVM_FLUTTER_VERSION environment variable. 2. The nearest .fvmrc in your current directory or a parent. 3. Your global default. 4. Another Flutter installation on PATH. An invalid or missing explicit selection produces an error. Follow its correction or installation command; FVM does not substitute another version."
+        },
+        {
+          "h": "Override a version temporarily",
+          "a": "override-a-version-temporarily",
+          "b": "Install the version first. In a POSIX shell: fvm install 3.44.0 FVM_FLUTTER_VERSION=3.44.0 fvm flutter test In PowerShell: fvm install 3.44.0 $env:FVM_FLUTTER_VERSION = \"3.44.0\" fvm flutter test Remove-Item Env:FVM_FLUTTER_VERSION The PowerShell variable lasts until you remove it. Neither example changes .fvmrc."
+        },
+        {
+          "h": "Remove unused SDKs",
+          "a": "remove-unused-sdks",
+          "b": "fvm list fvm remove 3.44.0 Projects share installed SDKs, so check your other projects before removing a version. FVM reports references it can detect but cannot discover every project on disk. See removal options."
         }
       ]
     },
     {
-      "u": "/versions/fvmrc",
-      "t": "The .fvmrc File",
-      "d": "Share your project’s Flutter version with teammates.",
-      "g": "Pinning Versions",
+      "u": "/commands",
+      "t": "Commands",
+      "d": "All FVM commands and options.",
+      "g": "Using FVM",
       "s": [
         {
-          "h": "Create a project pin",
-          "a": "create-a-project-pin",
-          "b": "From your project's root directory, run: fvm use 3.44.0 --gitignore FVM installs the SDK if needed and writes .fvmrc: {\"flutter\": \"3.44.0\"} Commit .fvmrc and the .gitignore change. Teammates can run fvm use 3.44.0 after cloning to install the same SDK and set up their editor link. fvm use stable and fvm use also save a concrete version number. Install a channel with fvm install stable before selecting it."
+          "b": "Run fvm --help for usage. For flutter, dart, and exec, all following arguments—including --help—belong to the tool being run."
         },
         {
-          "h": "Use one version across nested directories",
-          "a": "use-one-version-across-nested-directories",
-          "b": "Commands in subdirectories use the nearest .fvmrc in that directory or a parent. Running fvm use from a subdirectory updates that same file. To give a nested project its own version, run this from the nested project's root: fvm use 3.44.0 --here --gitignore"
+          "h": "fvm install",
+          "a": "fvm-install",
+          "b": "Download a Flutter SDK without changing your project pin. fvm install stable fvm install 3.44.0 fvm install 3.44.0 --force Accepts a version, channel, or saved alias. Channels check for their current release. Already installed versions are reused; --force (-f) replaces them. Select the downloaded SDK with fvm use."
         },
         {
-          "h": "Connect your editor",
-          "a": "connect-your-editor",
-          "b": "Set your editor's Flutter SDK path to .fvm/flutter_sdk beside .fvmrc. FVM updates this link when you run fvm use. Do not commit .fvm/: each computer creates its own link. See Quick Start for editor settings."
+          "h": "fvm use",
+          "a": "fvm-use",
+          "b": "Choose a version for the current project. fvm use 3.44.0 --gitignore fvm install stable fvm use stable Installs a missing SDK, writes a concrete version to .fvmrc, and updates .fvm/flutter_sdk. Install a channel before selecting it. --gitignore adds .fvm/ to the project’s .gitignore. --here creates a pin in this directory instead of updating the nearest parent pin. --global (-g) sets the global default instead of a project pin."
         },
         {
-          "h": "Read existing pins",
-          "a": "read-existing-pins",
-          "b": "FVM also accepts a bare version on one line, or a JSON flutter value naming a channel or alias. Those names must be available on each computer; concrete version numbers are simpler to share. If a pin is invalid or its SDK is missing, follow the error's correction or installation command. FVM will not substitute your global version."
+          "h": "fvm global",
+          "a": "fvm-global",
+          "b": "Set the default outside pinned projects, or show the current default. fvm global 3.44.0 fvm global Installs a missing SDK. For a channel, run fvm install stable before fvm global stable. Saves a concrete version number. Project pins and FVM_FLUTTER_VERSION take priority."
+        },
+        {
+          "h": "fvm list",
+          "a": "fvm-list",
+          "b": "Show installed versions, project selection, global default, aliases, and channels. fvm list fvm ls is the same command."
+        },
+        {
+          "h": "fvm list-remote",
+          "a": "fvm-list-remote",
+          "b": "Find releases available for your operating system and CPU architecture. fvm list-remote fvm list-remote --channel beta --all Requires a network connection. Defaults to the newest 25 stable releases. --channel (-c) accepts stable, beta, or dev; --all includes older releases."
+        },
+        {
+          "h": "fvm remove",
+          "a": "fvm-remove",
+          "b": "Delete an installed SDK to free disk space. fvm remove 3.44.0 Check other projects before removing a shared version. If FVM reports references to the SDK, update those pins, defaults, or aliases first. --force (-f) removes it anyway and leaves those references in place. Reinstall it with fvm install if needed."
+        },
+        {
+          "h": "fvm alias",
+          "a": "fvm-alias",
+          "b": "Save a shortcut for a version, or list saved names. fvm alias work 3.44.0 fvm alias list Creating an alias does not install an SDK. Run fvm use work to install and pin its version. Aliases can target channels or other aliases; avoid loops. Names are local to your computer."
+        },
+        {
+          "h": "fvm unalias",
+          "a": "fvm-unalias",
+          "b": "Delete a saved name without deleting the SDK. fvm unalias work Concrete project pins keep working. Update any manually written pins or other aliases that refer to the removed name."
+        },
+        {
+          "h": "fvm which",
+          "a": "fvm-which",
+          "b": "Explain the Flutter SDK selected for your current directory. fvm which fvm which --path --path prints only the Flutter executable path for scripts. fvm current is another name for this command. See resolution order."
+        },
+        {
+          "h": "fvm flutter",
+          "a": "fvm-flutter",
+          "b": "Run Flutter using the selected SDK. fvm flutter pub get fvm flutter run fvm flutter test fvm flutter --help Arguments and exit status pass through to Flutter. Install the selected SDK first; running Flutter does not download a missing SDK."
+        },
+        {
+          "h": "fvm dart",
+          "a": "fvm-dart",
+          "b": "Run the Dart bundled with the selected Flutter SDK. fvm dart --version fvm dart analyze fvm dart format . fvm dart run tool/generate.dart Uses Flutter’s Dart even if another Dart SDK is on PATH. Arguments and exit status pass through to Dart."
+        },
+        {
+          "h": "fvm exec",
+          "a": "fvm-exec",
+          "b": "Run a tool or script with the selected Flutter and Dart first on PATH. fvm exec dart analyze fvm exec sh tool/check.sh Replace the script path with your own. The command and tools it starts use the selected SDK. Your terminal’s PATH is unchanged afterward. All arguments belong to the child command; FVM returns its exit status."
+        },
+        {
+          "h": "fvm setup",
+          "a": "fvm-setup",
+          "b": "Create the Flutter launcher and configure your shell. fvm setup fvm setup --write-path-line Plain setup prints PATH instructions. --write-path-line backs up and edits the shell startup file; reopen the terminal afterward. On Windows, edit user PATH manually. --remove-path-line removes the line setup added, leaving manual entries and SDKs in place. --fvm-path= selects the FVM executable the launcher uses. If fvm is not on PATH, use its full installed path. See shell setup."
+        },
+        {
+          "h": "fvm doctor",
+          "a": "fvm-doctor",
+          "b": "Check SDK selection, project pins, editor links, and shell conflicts. fvm doctor Run this from the affected project and follow the corrections it prints. To check platform build tools and devices, use fvm flutter doctor."
+        },
+        {
+          "h": "fvm config",
+          "a": "fvm-config",
+          "b": "Read or save the color preference for FVM output. fvm config color fvm config color auto Modes are auto, always, and never. Auto respects NO_COLOR and TERM=dumb. Override one invocation with fvm --color=never list. Flutter and Dart control their own output."
+        },
+        {
+          "h": "fvm update",
+          "a": "fvm-update",
+          "b": "Update FVM while keeping installed SDKs and project pins. fvm update --check fvm update --check reports availability without installing. Use fvm update for a specific FVM release. See updating to update Flutter instead."
         }
       ]
     },
     {
-      "u": "/versions/aliases",
-      "t": "Aliases and Channels",
-      "d": "Choose a Flutter channel or save a short name for a version.",
-      "g": "Pinning Versions",
-      "s": [
-        {
-          "h": "Select a Flutter channel",
-          "a": "select-a-flutter-channel",
-          "b": "fvm install stable fvm use stable Install the channel first so FVM knows which release to use. fvm use stable pins that release's version number in your project. To move the project to a newer stable release, run both commands again. Installing a newer release by itself does not change the project's saved version. You can also use beta. Historical dev releases are available when listed by fvm list-remote --channel dev. FVM does not install main or master builds."
-        },
-        {
-          "h": "Save a name for a version",
-          "a": "save-a-name-for-a-version",
-          "b": "fvm alias work 3.44.0 fvm use work work is a shortcut on your computer. fvm use work saves the version number in .fvmrc, so teammates do not need your alias. List or remove your saved names: fvm alias list fvm unalias work Removing an alias leaves the SDK installed."
-        },
-        {
-          "h": "Use names in an existing pin",
-          "a": "use-names-in-an-existing-pin",
-          "b": "If you manually put a channel or alias in .fvmrc, FVM looks up its saved value on your computer. A channel does not fetch a newer release when you run Flutter; refresh it with fvm install stable or fvm install beta. Prefer the version number written by fvm use when sharing a project."
-        }
-      ]
-    },
-    {
-      "u": "/versions/resolution-order",
-      "t": "Resolution Order",
-      "d": "Find which Flutter version will run in your current directory.",
-      "g": "Pinning Versions",
-      "s": [
-        {
-          "h": "Check the selected version",
-          "a": "check-the-selected-version",
-          "b": "fvm which The output shows which Flutter SDK FVM selected and why. For only the executable path, use fvm which --path."
-        },
-        {
-          "h": "How FVM chooses Flutter",
-          "a": "how-fvm-chooses-flutter",
-          "b": "FVM uses the first selection that applies: 1. FVM_FLUTTER_VERSION, if you set this environment variable. 2. The nearest .fvmrc in your current directory or a parent directory. 3. The default you set with fvm global. 4. Another Flutter installation on your PATH. If none applies, install and select an SDK with fvm use . If an explicit selection is invalid or missing, fix that selection; FVM does not skip it to use another SDK."
-        },
-        {
-          "h": "Choose a default outside projects",
-          "a": "choose-a-default-outside-projects",
-          "b": "fvm global 3.44.0 A project's .fvmrc still takes priority."
-        },
-        {
-          "h": "Override the version for one command",
-          "a": "override-the-version-for-one-command",
-          "b": "Install the version first. In a POSIX shell: fvm install 3.44.0 FVM_FLUTTER_VERSION=3.44.0 fvm flutter test In PowerShell: fvm install 3.44.0 $env:FVM_FLUTTER_VERSION = \"3.44.0\" fvm flutter test Remove-Item Env:FVM_FLUTTER_VERSION The PowerShell variable applies to the session until you remove it. Neither example changes .fvmrc. If plain flutter chooses a different SDK from fvm flutter, check Shell Setup."
-        }
-      ]
-    },
-    {
-      "u": "/commands/install",
-      "t": "fvm install",
-      "d": "Download a Flutter SDK without changing your project’s selected version.",
-      "g": "Command Reference",
-      "s": [
-        {
-          "h": "Install Flutter",
-          "a": "install-flutter",
-          "b": "fvm install stable This downloads the current stable release. Select it for your project afterward with fvm use stable. To download a particular version: fvm install 3.44.0 Already installed versions are reused. Find available releases with fvm list-remote."
-        },
-        {
-          "h": "Reinstall an SDK",
-          "a": "reinstall-an-sdk",
-          "b": "fvm install 3.44.0 --force Use --force (or -f) to replace an installed SDK, for example after its files are damaged."
-        },
-        {
-          "h": "Install another channel or alias",
-          "a": "install-another-channel-or-alias",
-          "b": "You can pass beta or a saved alias instead of a version. Each fvm install stable or fvm install beta checks for that channel's current release. It does not change an existing project's version; run fvm use to do that."
-        }
-      ]
-    },
-    {
-      "u": "/commands/use",
-      "t": "fvm use",
-      "d": "Choose a project’s Flutter version and configure its editor SDK link.",
-      "g": "Command Reference",
-      "s": [
-        {
-          "h": "Select a version",
-          "a": "select-a-version",
-          "b": "From the project directory: fvm use 3.44.0 --gitignore FVM installs the version if needed, writes its number to .fvmrc, and creates .fvm/flutter_sdk for your editor. --gitignore adds .fvm/ to the project's .gitignore. Commit .fvmrc and the .gitignore change. See Quick Start for editor settings."
-        },
-        {
-          "h": "Select the current stable release",
-          "a": "select-the-current-stable-release",
-          "b": "fvm install stable fvm use stable Install the channel first. use stable saves the installed channel's version number, so later channel updates do not move this project. Saved aliases also resolve to version numbers."
-        },
-        {
-          "h": "Select a version for a nested project",
-          "a": "select-a-version-for-a-nested-project",
-          "b": "By default, use updates the nearest existing .fvmrc in your current directory or a parent. To give the current directory its own pin: fvm use 3.44.0 --here --gitignore"
-        },
-        {
-          "h": "Set a default instead",
-          "a": "set-a-default-instead",
-          "b": "fvm use --global (or -g) sets the fallback for directories without a project pin. It is equivalent to fvm global."
-        }
-      ]
-    },
-    {
-      "u": "/commands/global",
-      "t": "fvm global",
-      "d": "Choose the Flutter version used outside pinned projects.",
-      "g": "Command Reference",
-      "s": [
-        {
-          "h": "Set your default",
-          "a": "set-your-default",
-          "b": "fvm global 3.44.0 FVM installs the version if needed. Directories with a .fvmrc keep their project version; FVM_FLUTTER_VERSION also takes priority. To use the current stable release: fvm install stable fvm global stable This saves a specific version number. Repeat both commands when you want to update the default."
-        },
-        {
-          "h": "Show your default",
-          "a": "show-your-default",
-          "b": "fvm global To see what will run in your current directory, use fvm which."
-        }
-      ]
-    },
-    {
-      "u": "/commands/list",
-      "t": "fvm list",
-      "d": "See which Flutter SDKs are installed on your computer.",
-      "g": "Command Reference",
-      "s": [
-        {
-          "h": "List installed versions",
-          "a": "list-installed-versions",
-          "b": "fvm list The output identifies the current project selection and global default, along with saved aliases and channels. fvm ls is a shorter spelling of the same command."
-        },
-        {
-          "h": "Find a version to install",
-          "a": "find-a-version-to-install",
-          "b": "Use fvm list-remote to see releases you can download. Use fvm remove to delete an installed version you no longer need."
-        }
-      ]
-    },
-    {
-      "u": "/commands/list-remote",
-      "t": "fvm list-remote",
-      "d": "Find Flutter releases available for your computer.",
-      "g": "Command Reference",
-      "s": [
-        {
-          "h": "List stable releases",
-          "a": "list-stable-releases",
-          "b": "fvm list-remote Shows the newest 25 stable releases available for your operating system and CPU architecture. This command requires a network connection."
-        },
-        {
-          "h": "Choose a channel or show all releases",
-          "a": "choose-a-channel-or-show-all-releases",
-          "b": "fvm list-remote --channel beta fvm list-remote --all fvm list-remote --channel dev --all --channel (or -c) accepts stable, beta, or dev. --all includes older releases. Historical dev releases may be available; main and master builds are not supported."
-        },
-        {
-          "h": "Install a listed release",
-          "a": "install-a-listed-release",
-          "b": "Run fvm use to install it and select it for your project, or fvm install to download it without changing your project."
-        }
-      ]
-    },
-    {
-      "u": "/commands/remove",
-      "t": "fvm remove",
-      "d": "Free disk space by deleting an installed Flutter SDK.",
-      "g": "Command Reference",
-      "s": [
-        {
-          "h": "Remove an unused version",
-          "a": "remove-an-unused-version",
-          "b": "fvm list fvm remove 3.44.0 All projects using a version share its SDK. Check your other projects before removing it: they will need that version installed again to run."
-        },
-        {
-          "h": "If FVM refuses removal",
-          "a": "if-fvm-refuses-removal",
-          "b": "Change the project pin, global default, or alias identified in the error, then retry. FVM can check local references but cannot find every project on your disk. To remove the SDK even when references still point to it: fvm remove 3.44.0 --force --force (or -f) leaves those references in place. Repair affected projects with fvm use or reinstall the removed version with fvm install ."
-        }
-      ]
-    },
-    {
-      "u": "/commands/alias",
-      "t": "fvm alias",
-      "d": "Save a short name for a Flutter version.",
-      "g": "Command Reference",
-      "s": [
-        {
-          "h": "Create or change an alias",
-          "a": "create-or-change-an-alias",
-          "b": "fvm alias work 3.44.0 fvm use work The alias is saved on your computer. fvm use work writes the version number to .fvmrc, so teammates do not need to create the same alias. Creating an alias does not install the SDK. Selecting it with fvm use installs the version if needed."
-        },
-        {
-          "h": "List aliases",
-          "a": "list-aliases",
-          "b": "fvm alias list An alias can also name a channel or another alias. Install a channel before using it, and avoid aliases that point back to each other. Remove a name with fvm unalias."
-        }
-      ]
-    },
-    {
-      "u": "/commands/unalias",
-      "t": "fvm unalias",
-      "d": "Delete a saved name without deleting its Flutter SDK.",
-      "g": "Command Reference",
-      "s": [
-        {
-          "h": "Remove an alias",
-          "a": "remove-an-alias",
-          "b": "fvm unalias work The SDK remains installed. Projects pinned to a concrete version keep working. If you manually put this alias in .fvmrc, replace it by running fvm use . Other aliases that refer to the removed name also need updating. To remove the SDK itself, use fvm remove."
-        }
-      ]
-    },
-    {
-      "u": "/commands/which",
-      "t": "fvm which",
-      "d": "See which Flutter SDK will run and why it was selected.",
-      "g": "Command Reference",
-      "s": [
-        {
-          "h": "Explain the current selection",
-          "a": "explain-the-current-selection",
-          "b": "fvm which Shows the version and whether it came from an environment override, a project pin, your global default, or PATH. fvm current runs the same command."
-        },
-        {
-          "h": "Print only the executable path",
-          "a": "print-only-the-executable-path",
-          "b": "fvm which --path Use this when a script needs the path to the Flutter executable. If the result is unexpected, see Resolution Order or run fvm doctor."
-        }
-      ]
-    },
-    {
-      "u": "/commands/flutter",
-      "t": "fvm flutter",
-      "d": "Run Flutter using your project’s selected SDK.",
-      "g": "Command Reference",
-      "s": [
-        {
-          "h": "Run Flutter commands",
-          "a": "run-flutter-commands",
-          "b": "From your project directory: fvm flutter pub get fvm flutter run fvm flutter test fvm flutter build apk Choose the project's SDK with fvm use first. If the selected SDK is missing, install the version named in the error."
-        },
-        {
-          "h": "Check the version or get Flutter help",
-          "a": "check-the-version-or-get-flutter-help",
-          "b": "fvm flutter --version fvm flutter --help Everything after fvm flutter is passed to Flutter, including --help. A failing Flutter command returns the same exit status through FVM. To type just flutter, follow Shell Setup."
-        }
-      ]
-    },
-    {
-      "u": "/commands/dart",
-      "t": "fvm dart",
-      "d": "Run the Dart version included with your selected Flutter SDK.",
-      "g": "Command Reference",
-      "s": [
-        {
-          "h": "Run Dart commands",
-          "a": "run-dart-commands",
-          "b": "fvm dart --version fvm dart analyze fvm dart format . fvm dart run tool/generate.dart Run these from your project directory after selecting Flutter with fvm use. This uses Flutter's bundled Dart even if a separate Dart SDK is on PATH."
-        },
-        {
-          "h": "Get Dart help",
-          "a": "get-dart-help",
-          "b": "fvm dart --help All arguments after fvm dart go to Dart. Its exit status is returned unchanged. For scripts that need to find both Flutter and Dart themselves, use fvm exec."
-        }
-      ]
-    },
-    {
-      "u": "/commands/exec",
-      "t": "fvm exec",
-      "d": "Run a tool or script with your selected Flutter and Dart on PATH.",
-      "g": "Command Reference",
-      "s": [
-        {
-          "h": "Run a command",
-          "a": "run-a-command",
-          "b": "fvm exec dart analyze fvm exec flutter test The command and any tools it starts find your selected Flutter SDK's flutter and dart first on PATH. Your terminal's PATH is unchanged after it finishes."
-        },
-        {
-          "h": "Run a script",
-          "a": "run-a-script",
-          "b": "For a shell script that calls Flutter or Dart: fvm exec sh tool/check.sh Replace the script path with your own. All arguments after fvm exec belong to the command being run, including --help. FVM returns that command's exit status. Choose an SDK with fvm use before running the command."
-        }
-      ]
-    },
-    {
-      "u": "/commands/setup",
-      "t": "fvm setup",
-      "d": "Make fvm and your project’s flutter command available in the terminal.",
-      "g": "Command Reference",
-      "s": [
-        {
-          "h": "Configure your shell",
-          "a": "configure-your-shell",
-          "b": "On macOS or Linux: fvm setup --write-path-line Setup creates the Flutter launcher and adds the required PATH entries to your shell startup file, backing it up first. Open a new terminal afterward. If fvm is not on PATH yet, use its full installed path. For the default macOS or Linux installation: \"$HOME/.fvm/bin/fvm\" setup --write-path-line"
-        },
-        {
-          "h": "View instructions without editing your shell",
-          "a": "view-instructions-without-editing-your-shell",
-          "b": "fvm setup This creates the launcher and prints the PATH instructions. On Windows, add the printed directories to your user PATH manually; PowerShell does not support --write-path-line."
-        },
-        {
-          "h": "Remove an automatic PATH entry",
-          "a": "remove-an-automatic-path-entry",
-          "b": "fvm setup --remove-path-line This removes the line added by setup, leaving your SDKs and manually added lines alone. Restart the terminal afterward. If you move the FVM executable, run setup from its new location. --fvm-path= lets you explicitly select the executable the launcher should use. See Shell Setup to verify the result."
-        }
-      ]
-    },
-    {
-      "u": "/commands/doctor",
-      "t": "fvm doctor",
-      "d": "Find and fix problems with your FVM setup.",
-      "g": "Command Reference",
-      "s": [
-        {
-          "h": "Check your setup",
-          "a": "check-your-setup",
-          "b": "fvm doctor Run this from the affected project directory. Doctor checks your selected SDK, project configuration, editor link, and shell PATH. Follow the correction printed for each issue, then rerun the command."
-        },
-        {
-          "h": "Check Flutter itself",
-          "a": "check-flutter-itself",
-          "b": "fvm flutter doctor Use Flutter's doctor to check platform build tools and devices after FVM selects the right SDK. For missing commands or incorrect versions, see Troubleshooting."
-        }
-      ]
-    },
-    {
-      "u": "/commands/config",
-      "t": "fvm config",
-      "d": "Choose when FVM uses colored terminal output.",
-      "g": "Command Reference",
-      "s": [
-        {
-          "h": "Show your color preference",
-          "a": "show-your-color-preference",
-          "b": "fvm config color"
-        },
-        {
-          "h": "Save a preference",
-          "a": "save-a-preference",
-          "b": "fvm config color auto Choose auto, always, or never. auto adapts to the terminal and respects NO_COLOR and TERM=dumb."
-        },
-        {
-          "h": "Override one command",
-          "a": "override-one-command",
-          "b": "fvm --color=never list This overrides the saved preference for that invocation. It controls FVM's output; Flutter and Dart control their own output."
-        }
-      ]
-    },
-    {
-      "u": "/commands/update",
-      "t": "fvm update",
-      "d": "Install a newer FVM release while keeping your SDKs and project pins.",
-      "g": "Command Reference",
-      "s": [
-        {
-          "h": "Check for an update",
-          "a": "check-for-an-update",
-          "b": "fvm update --check Reports whether a newer FVM release is available without installing it."
-        },
-        {
-          "h": "Update FVM",
-          "a": "update-fvm",
-          "b": "fvm update To choose a specific FVM release, run fvm update using a version from FVM releases. If updating fails, rerun the installer."
-        },
-        {
-          "h": "Update Flutter instead",
-          "a": "update-flutter-instead",
-          "b": "fvm update updates the manager. To move a project to a newer Flutter SDK, follow Updating FVM and Flutter."
-        }
-      ]
-    },
-    {
-      "u": "/guides/dvm",
-      "t": "Using FVM alongside DVM",
-      "d": "Choose the right Dart command when you also use standalone Dart.",
-      "g": "Guides",
-      "s": [
-        {
-          "h": "Use Flutter's Dart for Flutter projects",
-          "a": "use-flutters-dart-for-flutter-projects",
-          "b": "fvm flutter --version fvm dart --version fvm dart analyze fvm dart uses the Dart included with your selected Flutter SDK. Plain dart continues to use your existing Dart setup, including DVM if you have installed it. For a script that calls both tools, run it with fvm exec so it finds the selected Flutter SDK's Flutter and Dart commands."
-        },
-        {
-          "h": "Configure a Flutter project",
-          "a": "configure-a-flutter-project",
-          "b": "Use .fvmrc to select Flutter and set the editor's Flutter SDK path to .fvm/flutter_sdk. A .dvmrc selects standalone Dart; it does not select Flutter. FVM's shell setup adds a flutter launcher. It can coexist with DVM's dart launcher. See Shell Setup."
-        },
-        {
-          "h": "If you already have another FVM installed",
-          "a": "if-you-already-have-another-fvm-installed",
-          "b": "These instructions are for mrgnhnt96/fvm, which is separate from the pub.dev package named fvm. Use the installation instructions here. Choose which fvm executable your PATH should use. If you keep both managers, give this one a separate FVM_HOME. Existing SDK caches are not imported; install the versions you need with fvm install. If commands reach the wrong manager, follow Troubleshooting."
-        }
-      ]
-    },
-    {
-      "u": "/guides/ci",
-      "t": "Using FVM in CI",
-      "d": "Install your project’s Flutter version and run tests in CI.",
-      "g": "Guides",
-      "s": [
-        {
-          "h": "Install FVM and the project SDK",
-          "a": "install-fvm-and-the-project-sdk",
-          "b": "Commit .fvmrc with a concrete Flutter version. On a macOS or Linux runner, this example installs FVM, makes it available to the current shell, and tests a project pinned to 3.44.0: curl -fsSL https://raw.githubusercontent.com/mrgnhnt96/fvm/main/install.sh sh export PATH=\"${FVM_HOME:-$HOME/.fvm}/bin:$PATH\" fvm install 3.44.0 fvm flutter pub get fvm flutter test Replace 3.44.0 with the version in your project's .fvmrc. Run the Flutter commands from the checked-out project directory. For Windows runners, use the Windows installation steps. Use your CI provider's environment or PATH mechanism if installation and testing run in separate steps. A shell's export may not carry over to the next step. You do not need shell setup when invoking Flutter through fvm flutter. Use fvm exec for scripts that call Flutter or Dart themselves."
-        },
-        {
-          "h": "Reuse downloaded SDKs",
-          "a": "reuse-downloaded-sdks",
-          "b": "Cache $FVM_HOME/versions (default: ~/.fvm/versions) between jobs. Include the operating system, CPU architecture, and pinned Flutter version in the cache key. Keep the install command so a job also works with an empty cache."
-        },
-        {
-          "h": "Test another Flutter version",
-          "a": "test-another-flutter-version",
-          "b": "Install the version before overriding the project pin. In a POSIX shell: fvm install 3.44.0 FVM_FLUTTER_VERSION=3.44.0 fvm flutter test A failing Flutter command returns a failing exit status to CI."
-        }
-      ]
-    },
-    {
-      "u": "/guides/updating-fvm",
-      "t": "Updating FVM",
-      "d": "Update FVM and choose when your projects move to newer Flutter releases.",
-      "g": "Guides",
+      "u": "/updating",
+      "t": "Updating",
+      "d": "Update FVM and Flutter.",
+      "g": "Using FVM",
       "s": [
         {
           "h": "Update FVM",
@@ -595,10 +234,33 @@
       ]
     },
     {
-      "u": "/guides/troubleshooting",
+      "u": "/ci",
+      "t": "CI",
+      "d": "Install and test your project in CI.",
+      "g": "Using FVM",
+      "s": [
+        {
+          "h": "Set up a runner",
+          "a": "set-up-a-runner",
+          "b": "Commit .fvmrc with a concrete Flutter version. On a macOS or Linux runner, this example installs FVM, makes it available to the current shell, and tests a project pinned to 3.44.0: curl -fsSL https://raw.githubusercontent.com/mrgnhnt96/fvm/main/install.sh sh export PATH=\"${FVM_HOME:-$HOME/.fvm}/bin:$PATH\" fvm install 3.44.0 fvm flutter pub get fvm flutter test Replace 3.44.0 with the version in your project's .fvmrc. Run the Flutter commands from the checked-out project directory. For Windows runners, use the Windows installation steps. Use your CI provider's environment or PATH mechanism if installation and testing run in separate steps. A shell's export may not carry over to the next step. You do not need shell setup when invoking Flutter through fvm flutter. Use fvm exec for scripts that call Flutter or Dart themselves."
+        },
+        {
+          "h": "Reuse downloaded SDKs",
+          "a": "reuse-downloaded-sdks",
+          "b": "Cache $FVM_HOME/versions (default: ~/.fvm/versions) between jobs. Include the operating system, CPU architecture, and pinned Flutter version in the cache key. Keep the install command so a job also works with an empty cache."
+        },
+        {
+          "h": "Test another Flutter version",
+          "a": "test-another-flutter-version",
+          "b": "Install the version before overriding the project pin. In a POSIX shell: fvm install 3.44.0 FVM_FLUTTER_VERSION=3.44.0 fvm flutter test A failing Flutter command returns a failing exit status to CI."
+        }
+      ]
+    },
+    {
+      "u": "/troubleshooting",
       "t": "Troubleshooting",
-      "d": "Fix missing commands, incorrect Flutter versions, and editor setup.",
-      "g": "Guides",
+      "d": "Fix command, SDK, and editor problems.",
+      "g": "Using FVM",
       "s": [
         {
           "h": "The fvm command is not found",
@@ -628,12 +290,12 @@
         {
           "h": "The editor uses another SDK",
           "a": "the-editor-uses-another-sdk",
-          "b": "Run fvm use again and set the editor's Flutter SDK path to .fvm/flutter_sdk beside .fvmrc. Restart the editor. See Quick Start for the VS Code setting. If Windows reports that it cannot create the SDK link, follow the error's instructions about permissions or Developer Mode, then rerun fvm use."
+          "b": "Run fvm use again and set the editor's Flutter SDK path to .fvm/flutter_sdk beside .fvmrc. Restart the editor. See Editor setup for the VS Code setting. If Windows reports that it cannot create the SDK link, follow the error's instructions about permissions or Developer Mode, then rerun fvm use."
         },
         {
-          "h": "Dart reports a different version",
-          "a": "dart-reports-a-different-version",
-          "b": "Use fvm dart --version to check the Dart bundled with your project's Flutter SDK. Plain dart may use a separate installation."
+          "h": "Using standalone Dart or another manager",
+          "a": "using-standalone-dart-or-another-manager",
+          "b": "Use fvm dart --version to check the Dart bundled with your project's Flutter SDK. Plain dart may use a separate installation, including DVM. .dvmrc selects standalone Dart; .fvmrc selects Flutter. Use fvm exec for scripts that need both Flutter and its Dart on PATH. These docs describe mrgnhnt96/fvm, which is separate from the pub.dev package named fvm. If you keep both managers, choose which executable PATH should find and give this one a separate FVM_HOME. Existing SDK caches are not imported; install the versions you need with fvm install."
         },
         {
           "h": "Get more diagnostic output",

@@ -267,8 +267,8 @@ def main() -> int:
 
         # A nested route, not the home page: this is where a relative index
         # path resolved against the page rather than against `<base href>`
-        # would ask for /commands/install/search-index.json and get a 404.
-        start = f"{origin}/commands/install/"
+        # would ask for /commands/search-index.json and get a 404.
+        start = f"{origin}/commands/"
         print(f"nested page at {start}")
         browser.send("Page.navigate", url=start)
         hydrated = wait_for(
@@ -316,7 +316,7 @@ def main() -> int:
             first_href = browser.eval("document.querySelector('.jaspr-search-hit')?.getAttribute('href')")
             check(
                 "the top result links at the resolution order page",
-                isinstance(first_href, str) and "/versions/resolution-order" in first_href,
+                isinstance(first_href, str) and "/versions" in first_href,
                 f"href was {first_href!r}",
             )
             results_height = measure_panel(browser)
@@ -343,15 +343,15 @@ def main() -> int:
 
             # The payoff: following a result has to land on a real page. A
             # result href built relative to the page the reader was standing on
-            # would aim at /commands/install/versions/resolution-order, which is
+            # would aim at /commands/versions, which is
             # a 404 here and nowhere else.
             browser.key("Enter", "Enter", 13)
             landed = wait_for(
                 lambda: isinstance(browser.eval("location.pathname"), str)
                 # startswith, not `in`: the failure this catches is landing on
-                # /commands/install/versions/resolution-order, which contains
+                # /commands/versions, which contains
                 # the route it was supposed to reach.
-                and browser.eval("location.pathname").startswith("/versions/resolution-order"),
+                and browser.eval("location.pathname").startswith("/versions"),
                 timeout=10,
             )
             check("Enter navigates to the result", landed, f"landed on {browser.eval('location.pathname')!r}")

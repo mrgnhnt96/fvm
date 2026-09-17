@@ -3,7 +3,7 @@
 Choose a Flutter version for each project and run its Flutter and Dart commands.
 Projects using the same version share one installed SDK.
 
-[Documentation](https://fvm.mrgnhnt.com) · [Installation](https://fvm.mrgnhnt.com/getting-started/installation) · [Troubleshooting](https://fvm.mrgnhnt.com/guides/troubleshooting)
+[Documentation](https://fvm.mrgnhnt.com) · [Installation](https://fvm.mrgnhnt.com/#installation) · [Troubleshooting](https://fvm.mrgnhnt.com/troubleshooting/)
 
 ## Install
 
@@ -24,7 +24,7 @@ Open a new terminal and run `fvm --version`.
 
 On Windows, download `fvm-windows-x64.zip` and its matching `.sha256` file from
 [FVM releases](https://github.com/mrgnhnt96/fvm/releases).
-Follow the [Windows installation steps](https://fvm.mrgnhnt.com/getting-started/installation)
+Follow the [Windows installation steps](https://fvm.mrgnhnt.com/#install-fvm-on-windows)
 to verify the download, extract it, and configure PATH.
 
 ## Set up a project
@@ -93,6 +93,6 @@ fvm use stable
 Test your app and commit the changed `.fvmrc`. Other projects keep their
 saved versions.
 
-See the [command reference](https://fvm.mrgnhnt.com/commands/install) for all
+See the [command reference](https://fvm.mrgnhnt.com/commands/) for all
 commands, or run `fvm <command> --help`. For `flutter`, `dart`, and `exec`,
 `--help` is passed to the tool you are running.

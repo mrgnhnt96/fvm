@@ -86,7 +86,7 @@ void main() {
     // so, and the deploy pipeline is what would have to answer for it.
     test('emits a domain root, which is what the site is served from', () {
       expect(homePage, contains('<base href="/"/>'));
-      expect(homePage, contains('href="/commands/install"'));
+      expect(homePage, contains('href="/commands"'));
     });
   });
 
@@ -110,6 +110,42 @@ void main() {
       expect(response.body, contains('<base href="/"/>'));
     });
 
+    test('legacy URLs redirect to existing pages and sections', () async {
+      final redirects = Directory(
+        'web',
+      ).listSync(recursive: true).whereType<File>().where((file) => file.path.endsWith('/index.html')).toList();
+      expect(redirects, hasLength(26));
+      for (final file in redirects) {
+        final route = file.path.substring('web'.length).replaceFirst(RegExp(r'index\.html$'), '');
+        final response = await _get(origin.resolve(route));
+        expect(response.status, 200, reason: route);
+        final target = RegExp(
+          r'<meta http-equiv="refresh" content="0; url=([^"]+)">',
+        ).firstMatch(response.body)?.group(1);
+        expect(target, isNotNull, reason: '$route has no redirect');
+        final uri = origin.resolve(target!);
+        final destination = await _get(uri.replace(fragment: ''));
+        expect(destination.status, 200, reason: target);
+        expect(destination.body, isNot(contains('http-equiv="refresh"')), reason: 'redirect chain: $route');
+        if (uri.hasFragment) {
+          expect(destination.body, contains('id="${uri.fragment}"'), reason: target);
+        }
+      }
+    });
+
+    test('llms.txt serves the six current Markdown guides', () async {
+      final response = await _get(origin.resolve('/llms.txt'));
+      expect(response.status, 200);
+      expect(response.body, File('web/llms.txt').readAsStringSync());
+      final links = RegExp(
+        r'https://raw\.githubusercontent\.com/mrgnhnt96/fvm/main/apps/docs/content/([^\s)]+)',
+      ).allMatches(response.body).map((match) => match.group(1)!).toList();
+      expect(links, hasLength(6));
+      for (final link in links) {
+        expect(File('content/$link').existsSync(), isTrue, reason: link);
+      }
+    });
+
     test('a path with no file behind it is a 404 — the server is real', () async {
       // If this ever returned 200, the server under test would answer anything
       // and every reference below would "resolve" no matter how broken it was.
@@ -129,7 +165,7 @@ void main() {
     // else entirely, and the home page is precisely where that mistake still
     // works.
     test('the search index is fetchable from where the dialog will ask for it', () async {
-      final page = await _get(origin.resolve('/commands/install/'));
+      final page = await _get(origin.resolve('/commands/'));
       expect(page.status, 200);
 
       // The path the page actually hands the browser, read out of the client
@@ -162,14 +198,14 @@ void main() {
       // wrong reason. If the index were also served next to each page, the
       // fetch would succeed however the path was resolved and the test would
       // prove nothing about the `<base href>` doing the work.
-      expect((await _get(origin.resolve('/commands/install/search-index.json'))).status, 404);
+      expect((await _get(origin.resolve('/commands/search-index.json'))).status, 404);
     });
 
     // The two kinds of page that fail differently. The home page catches a
     // broken root; a NESTED page catches a broken `<base>`, because that is
     // where a relative `src="main.client.dart.js"` would resolve to the wrong
     // directory rather than merely the wrong root.
-    for (final route in const ['/', '/commands/install', '/guides/troubleshooting']) {
+    for (final route in const ['/', '/commands', '/troubleshooting']) {
       test('every reference on $route resolves', () async {
         final url = origin.resolve(route == '/' ? '/' : '$route/');
         final page = await _get(url);
