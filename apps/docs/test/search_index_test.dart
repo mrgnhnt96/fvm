@@ -43,13 +43,8 @@ void main() {
       expect(linked.difference(indexed), isEmpty, reason: 'these pages are reachable but not searchable');
     });
 
-    test('labels results with the group they live in', () {
-      // The group is what puts "Using FVM" above a result row, and it
-      // comes from `navigation.dart` rather than from the markdown — so it is
-      // the one field that silently empties if the wiring is dropped.
-      final install = index.firstWhere((doc) => doc.url == '/commands');
-      expect(install.group, 'Using FVM');
-      expect(index.firstWhere((doc) => doc.url == '/').group, '');
+    test('top-level pages have no group label', () {
+      expect(index.every((doc) => doc.group.isEmpty), isTrue);
     });
 
     test('every page contributes at least one searchable section', () {

@@ -65,7 +65,6 @@
       "u": "/versions",
       "t": "Managing Versions",
       "d": "Project pins, channels, aliases, and defaults.",
-      "g": "Using FVM",
       "s": [
         {
           "h": "Project pins",
@@ -118,7 +117,6 @@
       "u": "/commands",
       "t": "Commands",
       "d": "All FVM commands and options.",
-      "g": "Using FVM",
       "s": [
         {
           "b": "Run fvm --help for usage. For flutter, dart, and exec, all following arguments—including --help—belong to the tool being run."
@@ -209,7 +207,6 @@
       "u": "/updating",
       "t": "Updating",
       "d": "Update FVM and Flutter.",
-      "g": "Using FVM",
       "s": [
         {
           "h": "Update FVM",
@@ -237,7 +234,6 @@
       "u": "/ci",
       "t": "CI",
       "d": "Install and test your project in CI.",
-      "g": "Using FVM",
       "s": [
         {
           "h": "Set up a runner",
@@ -260,7 +256,6 @@
       "u": "/troubleshooting",
       "t": "Troubleshooting",
       "d": "Fix command, SDK, and editor problems.",
-      "g": "Using FVM",
       "s": [
         {
           "h": "The fvm command is not found",

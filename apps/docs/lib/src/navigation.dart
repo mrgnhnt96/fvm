@@ -55,21 +55,14 @@ final class NavGroup {
 /// Pages that sit above the grouped navigation.
 const List<NavItem> topLevelNavigation = [
   NavItem('Getting Started', '/', summary: 'Install FVM and run your first project.'),
+  NavItem('Managing Versions', '/versions', summary: 'Project pins, channels, aliases, and defaults.'),
+  NavItem('Commands', '/commands', summary: 'All FVM commands and options.'),
+  NavItem('Updating', '/updating', summary: 'Update FVM and Flutter.'),
+  NavItem('CI', '/ci', summary: 'Install and test your project in CI.'),
+  NavItem('Troubleshooting', '/troubleshooting', summary: 'Fix command, SDK, and editor problems.'),
 ];
 
-const List<NavGroup> navigation = [
-  NavGroup(
-    'Using FVM',
-    icon: NavIcons.book,
-    items: [
-      NavItem('Managing Versions', '/versions', summary: 'Project pins, channels, aliases, and defaults.'),
-      NavItem('Commands', '/commands', summary: 'All FVM commands and options.'),
-      NavItem('Updating', '/updating', summary: 'Update FVM and Flutter.'),
-      NavItem('CI', '/ci', summary: 'Install and test your project in CI.'),
-      NavItem('Troubleshooting', '/troubleshooting', summary: 'Fix command, SDK, and editor problems.'),
-    ],
-  ),
-];
+const List<NavGroup> navigation = [];
 
 /// Pages that intentionally live outside the sidebar.
 ///
