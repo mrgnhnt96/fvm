@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.3
+
+- Add `fvm migrate` to move from leoafarias/fvm: migrates the current project, every project it tracked, and its global version, then offers to uninstall it. Supports `--dry-run` and `--[no-]uninstall`.
+- `fvm setup` detects leoafarias/fvm and offers to migrate.
+- Document using plain `flutter` through the shim, and how this FVM differs from leoafarias/fvm.
+- Consolidate the documentation into six guides with flat navigation.
+
 ## 0.0.2
 
 - Highlight installer success messages, warnings, headings, and commands with terminal colors.
