@@ -50,6 +50,13 @@ class CommandHarness {
 
   String? executablePath;
 
+  /// Left null to use the defaults: the real release client (which tests
+  /// that reach the network should not use), the real process runner, and
+  /// no terminal to prompt at.
+  ReleaseClient? releases;
+  ProcessRunner? processes;
+  Prompter? prompter;
+
   Future<int> run(List<String> args) => fvm.run(
         args,
         executablePath: executablePath,
@@ -59,6 +66,9 @@ class CommandHarness {
         out: out,
         err: err,
         installer: installer,
+        releases: releases,
+        processes: processes,
+        prompter: prompter,
       );
 
   /// Puts a usable SDK in the cache, the way a real install leaves it.

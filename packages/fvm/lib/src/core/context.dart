@@ -6,6 +6,7 @@ import 'installer.dart';
 import 'paths.dart';
 import 'platform.dart';
 import 'process.dart';
+import 'prompt.dart';
 import 'releases.dart';
 import 'resolver.dart';
 import 'style.dart';
@@ -42,6 +43,7 @@ class FvmContext {
     required this.outIsTerminal,
     required this.verbose,
     required this.styles,
+    this.prompter = const NonInteractivePrompter(),
   });
 
   /// Builds a context from the pieces that vary, wiring up the rest.
@@ -63,6 +65,7 @@ class FvmContext {
     Installer? installer,
     ProcessRunner? processes,
     Updater? updater,
+    Prompter? prompter,
   }) {
     // Built here when the caller did not supply one so that a context wired
     // by a test is verbose-capable without every test having to say so. It
@@ -125,6 +128,7 @@ class FvmContext {
       outIsTerminal: outIsTerminal,
       verbose: log,
       styles: style,
+      prompter: prompter ?? const NonInteractivePrompter(),
     );
   }
 
@@ -179,6 +183,11 @@ class FvmContext {
   /// is emphasised, so the palette is changeable in one file and `ok` cannot be
   /// green in one command and bold-green in the next.
   final Styles styles;
+
+  /// Asks the user yes/no questions. Non-interactive unless the composition
+  /// root found a terminal, so a command must check
+  /// [Prompter.isInteractive] and have an answer for when nobody is there.
+  final Prompter prompter;
 
   /// The directory commands act relative to — `.fvmrc` lookup starts here.
   Directory get workingDirectory => fileSystem.currentDirectory;

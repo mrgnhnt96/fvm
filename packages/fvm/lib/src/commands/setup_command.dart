@@ -8,6 +8,7 @@ import '../core/exceptions.dart';
 import '../core/path_line.dart';
 import '../core/shell.dart';
 import '../core/shims.dart';
+import 'migrate_command.dart';
 
 /// `fvm setup` — Install the shims and print the PATH line to add.
 ///
@@ -85,7 +86,14 @@ class SetupCommand extends Command<int> {
     // from a source checkout the way an undo should.
     if (remove) return _removePathLine();
 
-    return _setup(_resolveFvmBinary(), write: write);
+    final code = await _setup(_resolveFvmBinary(), write: write);
+
+    // Setup is the step right after installing, so it is where someone moving
+    // from leoafarias/fvm is offered the move. Only here, never from the
+    // automatic setup other commands run: a question in the middle of
+    // `fvm install` would be answering something nobody asked.
+    final migrated = await offerMigration(context);
+    return code == 0 && !migrated ? 1 : code;
   }
 
   Future<int> _setup(File binary, {required bool write}) async {

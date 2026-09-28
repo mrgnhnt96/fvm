@@ -18,6 +18,7 @@ import 'src/commands/global_command.dart';
 import 'src/commands/install_command.dart';
 import 'src/commands/list_command.dart';
 import 'src/commands/list_remote_command.dart';
+import 'src/commands/migrate_command.dart';
 import 'src/commands/remove_command.dart';
 import 'src/commands/setup_command.dart';
 import 'src/commands/unalias_command.dart';
@@ -28,6 +29,7 @@ import 'src/core/context.dart';
 import 'src/core/exceptions.dart';
 import 'src/core/installer.dart';
 import 'src/core/process.dart';
+import 'src/core/prompt.dart';
 import 'src/core/releases.dart';
 import 'src/core/style.dart';
 import 'src/core/updater.dart';
@@ -42,6 +44,7 @@ export 'src/core/installer.dart';
 export 'src/core/paths.dart';
 export 'src/core/platform.dart';
 export 'src/core/process.dart';
+export 'src/core/prompt.dart';
 export 'src/core/releases.dart';
 export 'src/core/resolver.dart';
 export 'src/core/style.dart';
@@ -70,6 +73,7 @@ Future<int> run(
   ProcessRunner? processes,
   Updater? updater,
   String? executablePath,
+  Prompter? prompter,
 }) async {
   final output = out ?? stdout;
   final errors = err ?? stderr;
@@ -113,6 +117,12 @@ Future<int> run(
     installer: installer,
     processes: processes,
     updater: updater,
+    // Only the real stdout gets the real stdin: an injected sink is a test or
+    // an embedder, and neither is a person who can answer.
+    prompter: prompter ??
+        (out == null
+            ? StdinPrompter(out: output)
+            : const NonInteractivePrompter()),
   );
 
   try {
@@ -191,6 +201,7 @@ class FvmCommandRunner extends CommandRunner<int> {
     addCommand(ExecCommand(context: context));
     addCommand(SetupCommand(context: context));
     addCommand(DoctorCommand(context: context));
+    addCommand(MigrateCommand(context: context));
     addCommand(UpdateCommand(context: context));
   }
 
