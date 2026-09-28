@@ -5,6 +5,44 @@ Projects using the same version share one installed SDK.
 
 [Documentation](https://fvm.mrgnhnt.com) · [Installation](https://fvm.mrgnhnt.com/#installation) · [Troubleshooting](https://fvm.mrgnhnt.com/troubleshooting/)
 
+## How this differs from Leo Farias's FVM
+
+This is a separate project from [leoafarias/fvm](https://github.com/leoafarias/fvm),
+the widely used Flutter Version Management tool. It shares the name, the
+`fvm` command, the `.fvmrc` file, and the `.fvm/flutter_sdk` editor link, but
+it is a different implementation:
+
+- **Shims first.** Setup puts a `flutter` shim on your PATH, so plain
+  `flutter` runs the version pinned in `.fvmrc`. You do not have to prefix
+  every command with `fvm flutter`.
+- **Official release archives.** SDKs are downloaded from Flutter's release
+  manifest and checked against its SHA-256 digests, rather than cloned from the
+  Flutter Git repository.
+- **Standalone binary.** FVM ships as a compiled executable from
+  [GitHub Releases](https://github.com/mrgnhnt96/fvm/releases). It is not on
+  pub.dev, and you do not need Dart or Flutter installed first. `fvm update`
+  updates it in place.
+- **One Flutter version per project.** `.fvmrc` only records the `flutter`
+  version. Other keys, such as flavors, are ignored when reading and dropped
+  when `fvm use` rewrites the file.
+
+### Migrating
+
+Both tools provide an `fvm` command, so use only one of them on a machine.
+When `fvm setup` finds Leo Farias's FVM, it offers to migrate: your global
+version and the projects it tracked move over, then it asks whether to
+uninstall the other FVM. To migrate later, or one project at a time, run this
+from the project:
+
+```sh
+fvm migrate --dry-run   # preview the changes
+fvm migrate
+```
+
+Forks, commits, `master`, and custom SDKs have no equivalent here and are left
+unchanged. Flavors are removed. See [`fvm migrate`](https://fvm.mrgnhnt.com/commands/#fvm-migrate)
+for details.
+
 ## Install
 
 On macOS or Linux:
@@ -20,12 +58,14 @@ by the installer. For the default location:
 "$HOME/.fvm/bin/fvm" setup --write-path-line
 ```
 
-Open a new terminal and run `fvm --version`.
+Setup installs FVM's `flutter` shim and puts it first on your PATH, so plain
+`flutter` runs your project's version. Open a new terminal and run
+`fvm --version`.
 
 On Windows, download `fvm-windows-x64.zip` and its matching `.sha256` file from
 [FVM releases](https://github.com/mrgnhnt96/fvm/releases).
 Follow the [Windows installation steps](https://fvm.mrgnhnt.com/#install-fvm-on-windows)
-to verify the download, extract it, and configure PATH.
+to verify the download, extract it, and add FVM and its shims folder to PATH.
 
 ## Set up a project
 
@@ -34,8 +74,8 @@ From your Flutter project's root directory:
 ```sh
 fvm install stable
 fvm use stable --gitignore
-fvm flutter pub get
-fvm flutter run
+flutter pub get
+flutter run
 ```
 
 This saves the installed stable release's **version number** in `.fvmrc`.
@@ -62,18 +102,20 @@ In Android Studio or IntelliJ, set the Flutter SDK path to the full path of
 ## Everyday use
 
 ```sh
-fvm flutter test
+flutter test
 fvm dart analyze
 fvm which
 fvm list
 ```
 
-After shell setup, plain `flutter` also follows your project's version.
-Use `fvm dart` for the Dart bundled with Flutter; plain `dart` keeps your
-existing Dart setup.
+The `flutter` shim picks the SDK pinned in `.fvmrc`, so use `flutter` as you
+normally would. FVM only shims `flutter`: use `fvm dart` for the Dart bundled
+with your project's Flutter; plain `dart` keeps your existing Dart setup.
 
 To set a default outside pinned projects, run `fvm global <version>`.
-Use `fvm doctor` if the wrong SDK runs.
+If `flutter` runs the wrong SDK, check `fvm which` and `fvm doctor`; the shims
+folder must come before other Flutter installations on PATH. Without the shim,
+`fvm flutter <args>` runs the same resolution explicitly.
 
 ## Update
 

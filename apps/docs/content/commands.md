@@ -170,6 +170,27 @@ fvm doctor
 
 Run this from the affected project and follow the corrections it prints. To check platform build tools and devices, use `fvm flutter doctor`.
 
+## fvm migrate
+
+Move from [leoafarias/fvm](https://github.com/leoafarias/fvm) to this FVM.
+
+```sh
+fvm migrate --dry-run
+fvm migrate
+fvm migrate --uninstall
+```
+
+Migrates the current project and every project the other FVM tracked: writes `.fvmrc`, links `.fvm/flutter_sdk`, removes its files from `.fvm/`, and points VS Code's `dart.flutterSdkPath` at `.fvm/flutter_sdk`. Its global version becomes your global default unless you already have one. Missing SDKs are installed.
+
+A `release@channel` pin keeps the release. A channel pin is saved as the channel's current release. Flavors and the other FVM's settings are removed from `.fvmrc`. Forks, commits, `master`, and custom SDKs are reported and left unchanged.
+
+Afterwards it asks whether to uninstall the other FVM. Its cached SDKs and any PATH lines in your startup files are left for you to remove; the command lists them.
+
+- `--dry-run` shows what would change without changing anything.
+- `--uninstall` uninstalls without asking; `--no-uninstall` keeps it. Without a terminal, the uninstall commands are printed instead.
+
+`fvm setup` offers to run this when it finds the other FVM.
+
 ## fvm config
 
 Read or save the color preference for FVM output.
