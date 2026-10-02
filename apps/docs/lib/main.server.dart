@@ -146,6 +146,16 @@ final class FvmDocsLayout extends DocsLayout {
     // key, because `PageLayoutBase.buildHead` hardcodes `type: 'image/png'` on
     // the link it emits, which is the wrong MIME type for an SVG icon.
     yield link(rel: 'icon', type: 'image/svg+xml', href: '/images/favicon.svg');
+    // Amplitude Browser SDK, once per page: loader first, then init. The API
+    // key is a PUBLIC, ingestion-scoped Amplitude project key designed to ship
+    // in client source, so it is in plain sight here rather than hidden.
+    // `serverZone: 'US'`, autocapture on, and Session Replay deliberately left
+    // off (free tier). `script`'s `content:` is emitted through `RawText`, so
+    // the inline init JS renders verbatim rather than HTML-escaped.
+    yield script(src: 'https://cdn.amplitude.com/script/15288b16e4a64d54978fa9d86adddad1.js');
+    yield script(
+      content: "window.amplitude.init('15288b16e4a64d54978fa9d86adddad1', { serverZone: 'US', autocapture: true });",
+    );
     yield Style(styles: _styles);
   }
 
