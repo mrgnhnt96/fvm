@@ -83,6 +83,32 @@ void main() {
   );
 }
 
+/// Client-side JS that reports docs search terms to Amplitude.
+///
+/// Delegated from `document` because jaspr_search mounts the search input
+/// (`#jaspr-search-input`) lazily; debounced so only a settled query fires, and
+/// deduped so each distinct term sends at most one `docs_search` event.
+const _searchTrackingScript = '''
+(function () {
+  var DEBOUNCE_MS = 800;
+  var timer = null;
+  var lastSent = null;
+  document.addEventListener('input', function (event) {
+    var target = event.target;
+    if (!target || target.id !== 'jaspr-search-input') return;
+    var query = (target.value || '').trim();
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(function () {
+      if (query.length < 2) return;
+      if (query === lastSent) return;
+      if (!window.amplitude) return;
+      lastSent = query;
+      window.amplitude.track('docs_search', { search_term: query });
+    }, DEBOUNCE_MS);
+  });
+})();
+''';
+
 /// The one link in the header that leaves the site.
 ///
 /// Absolute and external on purpose: it leaves the site entirely, so it is the
@@ -156,6 +182,17 @@ final class FvmDocsLayout extends DocsLayout {
     yield script(
       content: "window.amplitude.init('15288b16e4a64d54978fa9d86adddad1', { serverZone: 'US', autocapture: true });",
     );
+    // Docs search-term tracking. jaspr_search's `SearchDialog` mounts its modal
+    // — and the `#jaspr-search-input` text field inside it — lazily in the
+    // browser, so the trigger button is the only part pre-rendered and a
+    // listener bound to the input at load time would find nothing. Instead this
+    // delegates from `document` and filters by the input's fixed id (a constant
+    // in jaspr_search; verified in the compiled client bundle). Each keystroke
+    // resets an ~800ms debounce so only the settled query is reported, and a
+    // `lastSent` guard keeps it to one `docs_search` event per distinct term.
+    // `window.amplitude` is guarded because this fires only on user input, long
+    // after the loader above has run. Emitted verbatim via `RawText`.
+    yield script(content: _searchTrackingScript);
     yield Style(styles: _styles);
   }
 
