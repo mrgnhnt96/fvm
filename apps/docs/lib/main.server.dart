@@ -88,11 +88,61 @@ void main() {
 /// Delegated from `document` because jaspr_search mounts the search input
 /// (`#jaspr-search-input`) lazily; debounced so only a settled query fires, and
 /// deduped so each distinct term sends at most one `docs_search` event.
+///
+/// Each event also carries a numeric `result_count`. jaspr_search renders its
+/// hits asynchronously (`SearchDialogView._runQuery` runs through `setState`,
+/// which Jaspr flushes on a later frame), so the count cannot be read the
+/// instant the debounce fires. Once the debounce settles, this polls the DOM
+/// every ~150ms until the count stops changing (or a ~1500ms cap), then sends
+/// one event. The hits are `li.jaspr-search-hit-item` under
+/// `#jaspr-search-dialog`; the "no matches" panel renders no such items, so an
+/// empty result set is reported as `result_count: 0` — verified against the
+/// pinned jaspr_search source (`lib/src/search_dialog_view.dart`, the
+/// `.jaspr-search-hit-list` / `.jaspr-search-hit-item` markup and the
+/// `.jaspr-search-empty[data-state="no-results"]` panel).
 const _searchTrackingScript = '''
 (function () {
   var DEBOUNCE_MS = 800;
+  var POLL_MS = 150;
+  var STABILIZE_CAP_MS = 1500;
   var timer = null;
   var lastSent = null;
+
+  function countResults() {
+    return document.querySelectorAll(
+      '#jaspr-search-dialog .jaspr-search-hit-item'
+    ).length;
+  }
+
+  function send(query, count) {
+    if (query === lastSent) return;
+    if (!window.amplitude) return;
+    lastSent = query;
+    window.amplitude.track('docs_search', {
+      search_term: query,
+      result_count: count,
+    });
+  }
+
+  // Wait for the async-rendered results to stabilize before counting: poll
+  // until two consecutive reads match, or the cap is hit, then send once.
+  function settle(query) {
+    var elapsed = 0;
+    var prev = countResults();
+    (function poll() {
+      setTimeout(function () {
+        var current = countResults();
+        elapsed += POLL_MS;
+        if (current === prev || elapsed >= STABILIZE_CAP_MS) {
+          send(query, current);
+          return;
+        }
+        prev = current;
+        poll();
+      }, POLL_MS);
+    })();
+  }
+
   document.addEventListener('input', function (event) {
     var target = event.target;
     if (!target || target.id !== 'jaspr-search-input') return;
@@ -101,9 +151,7 @@ const _searchTrackingScript = '''
     timer = setTimeout(function () {
       if (query.length < 2) return;
       if (query === lastSent) return;
-      if (!window.amplitude) return;
-      lastSent = query;
-      window.amplitude.track('docs_search', { search_term: query });
+      settle(query);
     }, DEBOUNCE_MS);
   });
 })();
@@ -190,6 +238,8 @@ final class FvmDocsLayout extends DocsLayout {
     // in jaspr_search; verified in the compiled client bundle). Each keystroke
     // resets an ~800ms debounce so only the settled query is reported, and a
     // `lastSent` guard keeps it to one `docs_search` event per distinct term.
+    // Each event also carries a numeric `result_count`, read from the rendered
+    // hit list once it settles (0 when the "no matches" panel is shown).
     // `window.amplitude` is guarded because this fires only on user input, long
     // after the loader above has run. Emitted verbatim via `RawText`.
     yield script(content: _searchTrackingScript);
